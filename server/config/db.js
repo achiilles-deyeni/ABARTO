@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 
 // Database configuration
 mongoose
-  .connect("mongodb://127.0.0.1:27017/backend", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://achillesmann03:admin@cluster0.miqi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log("Connection established");
   })
