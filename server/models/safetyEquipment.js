@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// administration model
+// safety model
 
 const safetySchema = new mongoose.Schema({
   EquipmentName: { type: String, required: true, unique: true },
@@ -10,4 +10,4 @@ const safetySchema = new mongoose.Schema({
   EquipmentQuantity: { type: Number, required: true },
   EquipmentDateProvided: { type: Date, required: true },
 });
-const safety = mongoose.model("safety", safetySchema);
+module.exports = mongoose.model("safety", safetySchema);

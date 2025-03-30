@@ -12,4 +12,4 @@ const AdminSchema = new mongoose.Schema({
   portfolio: { type: String, required: true },
   dateEmployed: { type: Date, default: Date.now },
 });
-const Admin = mongoose.model("Admin", AdminSchema);
+module.exports = mongoose.model("Admin", AdminSchema);

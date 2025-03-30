@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// administration model
+// wholesale model
 
 const wholesaleSchema = new mongoose.Schema({
   wholeSalerName: { type: String, required: true, unique: true },
@@ -11,4 +11,4 @@ const wholesaleSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
   ], // referencing the product schema through ObjectId
 });
-const wholesale = mongoose.model("wholesale", wholesaleSchema);
+module.exports = mongoose.model("wholesale", wholesaleSchema);

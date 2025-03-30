@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// administration model
+// raw materials model
 
 const rawMaterialsSchema = new mongoose.Schema({
   Name: { type: String, required: true, unique: true },
@@ -8,4 +8,4 @@ const rawMaterialsSchema = new mongoose.Schema({
   Quantity: { type: Number, required: true },
   dateProvided: { type: Date, required: true },
 });
-const rawMaterials = mongoose.model("rawMaterials", rawMaterialsSchema);
+module.exports = mongoose.model("rawMaterials", rawMaterialsSchema);
