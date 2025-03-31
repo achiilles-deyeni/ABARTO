@@ -1,10 +1,22 @@
 // importing all models
-const Admin = require("./models/admin");
-const ChemicalCompound = require("./models/chemicalCompound");
-const Suppliers = require("./models/Suppliers");
-const RawMaterials = require("./models/rawMaterial");
-const employees = require("./models/employees");
-const machines = require("./models/machineryParts");
-const wholesale = require("./models/wholesaleOrder");
-const products = require("./models/products");
-const safety = require("./models/safetyEquipment");
+const Admin = require("./admin");
+const ChemicalCompound = require("./chemicalCompound");
+const Suppliers = require("./Suppliers");
+const RawMaterials = require("./rawMaterial");
+const Employee = require("./employee");
+const MachineryPart = require("./machineryPart");
+const Wholesale = require("./wholesaleOrder");
+const Product = require("./products");
+const Safety = require("./safetyEquipment");
+
+module.exports = {
+  Admin,
+  ChemicalCompound,
+  Suppliers,
+  RawMaterials,
+  Employee,
+  MachineryPart,
+  Wholesale,
+  Product,
+  Safety
+};
