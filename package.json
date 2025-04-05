@@ -19,7 +19,9 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
+    "joi": "^17.13.3",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.12.1"
+    "mongoose": "^8.12.1",
+    "node-mailer": "^0.1.1"
   }
 }
