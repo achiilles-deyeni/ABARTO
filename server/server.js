@@ -7,8 +7,6 @@ const app = express();
 // Importing the database configuration
 const db = require("./config/db");
 
-// Importing routes
-// const authRouter = require("./routers/auth");
 
 // initializing the modules
 app.use(cookieParser());
