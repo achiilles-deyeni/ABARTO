@@ -14,12 +14,8 @@ const EmployeeSchema = new mongoose.Schema({
   emergencyContact: {
     name: { type: String },
     relationship: { type: String },
-    phoneNumber: { type: String }
+    phoneNumber: { type: String },
   },
   dateEmployed: { type: Date, default: Date.now },
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 module.exports = mongoose.model("Employee", EmployeeSchema);

@@ -18,9 +18,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// using the routes
-// app.use("/api/auth", authRouter);
-
 // Initialization of the port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
