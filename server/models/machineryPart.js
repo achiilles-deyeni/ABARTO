@@ -13,4 +13,4 @@ const machineryPartsSchema = new mongoose.Schema({
     required: true,
   },
 });
-const machineryParts = mongoose.model("machines", machineryPartsSchema);
+module.exports = mongoose.model("machines", machineryPartsSchema);

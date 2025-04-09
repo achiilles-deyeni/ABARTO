@@ -13,4 +13,4 @@ const ChemicalCompoundSchema = new mongoose.Schema({
   bioavailability: { type: String },
 });
 
-const chemicals = mongoose.model("chemicals", ChemicalCompoundSchema);
+module.exports = mongoose.model("chemicals", ChemicalCompoundSchema);
