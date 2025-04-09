@@ -1,6 +1,5 @@
 // Importing the needed modules
 const express = require("express");
-const router = express.Router();
 const cookieParser = require("cookie-parser");
 const app = express();
 const adminRoute = require("./routes/api/admin");
@@ -21,12 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // using the routes
 // app.use("/api/auth", authRouter);
-app.use("/admins", adminRoute);
-app.use("/products", productsRoute);
-app.use("/machines", machinesRoute);
-app.use("/rawmaterials", rawMaterialsRoute);
 
 // Initialization of the port
-app.listen(3000 || process.env.PORT, () => {
-  console.log("Server is running on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
