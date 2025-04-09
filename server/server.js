@@ -11,16 +11,12 @@ const rawMaterialsRoute = require("./routes/api/material");
 // Importing the database configuration
 const db = require("./config/db");
 
-// Importing routes
-// const authRouter = require("./routers/auth");
-
 // initializing the modules
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // using the routes
-// app.use("/api/auth", authRouter);
 app.use("/admins", adminRoute);
 app.use("/products", productsRoute);
 app.use("/machines", machinesRoute);
