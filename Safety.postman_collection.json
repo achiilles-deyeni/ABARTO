@@ -1,0 +1,267 @@
+{
+	"info": {
+		"_postman_id": "c9d0e1f2-a3b4-5678-bcde-7890abcdef12",
+		"name": "Safety",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL SAFETY EQUIPMENT",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET SAFETY EQUIPMENT BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE SAFETY EQUIPMENT",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"equipmentName\": \"Eye Wash Station C3\",\\n  \"nextInspectionDate\": \"2024-05-01\",\\n  \"status\": \"ok\",\\n  \"location\": \"Lab Area\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE SAFETY EQUIPMENT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE SAFETY EQUIPMENT (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"equipmentName\": \"Fire Extinguisher A1 - Relocated\",\\n  \"lastInspectionDate\": \"2023-06-01T00:00:00.000Z\",\\n  \"nextInspectionDate\": \"2024-06-01T00:00:00.000Z\",\\n  \"status\": \"ok\",\\n  \"location\": \"Workshop Area 2\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE SAFETY EQUIPMENT (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"status\": \"needs_repair\",\\n  \"lastInspectionDate\": \"2023-11-15T00:00:00.000Z\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR SAFETY EQUIPMENT",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON SAFETY EQUIPMENT COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE SAFETY EQUIPMENT",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH SAFETY EQUIPMENT",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/search?status=ok&location=Workshop",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"search"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "ok"
+						},
+                        {
+							"key": "location",
+							"value": "Workshop"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

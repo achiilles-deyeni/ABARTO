@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "d0e1f2a3-b4c5-6789-cdef-890abcdef123",
+		"name": "Chemicals",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL CHEMICALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET CHEMICAL BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A CHEMICAL",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"compoundName\": \"Isopropyl Alcohol\",\\n  \"formula\": \"C3H8O\",\\n  \"quantity\": 100,\\n  \"unit\": \"liters\",\\n  \"storageLocation\": \"Flammables Cabinet\",\\n  \"safetySheetUrl\": \"/sds/ipa.pdf\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A CHEMICAL",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A CHEMICAL (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"compoundName\": \"Lubricant Oil Grade 5\",\\n  \"formula\": \"N/A\",\\n  \"quantity\": 45,\\n  \"unit\": \"liters\",\\n  \"storageLocation\": \"Chem Cabinet A - Shelf 2\",\\n  \"safetySheetUrl\": \"/sds/lube_oil_g5_rev1.pdf\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A CHEMICAL (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"quantity\": 48\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR CHEMICALS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON CHEMICALS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE CHEMICAL",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH CHEMICALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/search?storageLocation=Cabinet%20A",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"search"
+					],
+					"query": [
+						{
+							"key": "storageLocation",
+							"value": "Cabinet A"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

@@ -1,0 +1,267 @@
+{
+	"info": {
+		"_postman_id": "a7b8c9d0-e1f2-3456-fabc-567890abcde0",
+		"name": "Security",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL SECURITY LOGS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET SECURITY LOG BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A SECURITY LOG",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"eventType\": \"Unauthorized Access Attempt\",\\n  \"level\": \"error\",\\n  \"userId\": \"{{adminId}}\", \\n  \"details\": \"Failed login attempt for user admin@abarto.com from IP 10.0.0.5\",\\n  \"source\": \"Auth Service\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A SECURITY LOG",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A SECURITY LOG (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"timestamp\": \"2023-11-15T10:30:00.000Z\", \\n  \"eventType\": \"Login Success\",\\n  \"level\": \"info\",\\n  \"userId\": \"{{adminId}}\",\\n  \"details\": \"Admin logged in successfully - Updated record.\",\\n  \"source\": \"192.168.1.100\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A SECURITY LOG (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"details\": \"System setting 'X' modified (Severity updated).\",\\n  \"level\": \"critical\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR SECURITY LOGS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON SECURITY LOGS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE SECURITY LOG",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH SECURITY LOGS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/search?level=error&eventType=Access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"search"
+					],
+					"query": [
+						{
+							"key": "level",
+							"value": "error"
+						},
+                        {
+							"key": "eventType",
+							"value": "Access"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 
