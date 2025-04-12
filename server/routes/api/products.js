@@ -1,77 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const products = require("../../models/products");
+const productController = require('../../controllers/productController');
 
-// Route to add products
-router.post("/insert-product", async (req, res) => {
-  try {
-    const { name, price, description, category, quantity, rating } = req.body;
-    const product = await product.findOne({ name });
-    if (product) {
-      return res
-        .status(402)
-        .json({ success: false, message: "Product already exists!" });
-    }
-    const newProduct = new products({
-      name,
-      price,
-      description,
-      category,
-      quantity,
-      rating,
-    });
-    const result = await newProduct.save();
-    res.status(201).json({
-      success: true,
-      message: "Product added successfully!",
-      result,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// GET all products, POST new product, HEAD, OPTIONS
+router.route('/')
+    .get(productController.getAllProducts)
+    .post(productController.createProduct)
+    .head(productController.headProducts)
+    .options(productController.getProductOptions);
 
-//   route to update a product
-router.patch("/:id", async (req, res) => {
-  try {
-    const product = products.findById(req.params.id);
-    if (!product) {
-      res.status(404).json({ message: "Product not found!" });
-    }
-    product.name = req.body.name;
-    product.price = req.body.price;
-    product.description = req.body.description;
-    product.category = req.body.category;
-    product.quantity = req.body.quantity;
-    product.rating = req.body.rating;
-    await product.save();
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Search products - MUST come BEFORE the /:id route
+router.route('/search')
+    .get(productController.searchProducts);
 
-//   Route to delete a product
-router.get("/:id", async (req, res) => {
-  try {
-    const product = await products.findById(req.params.id);
-    if (!product) {
-      res.status(404).json({ message: "Product not found!" });
-    }
-    await product.remove();
-    res.status(500).json({ message: "Product deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// GET, PUT, DELETE, PATCH, HEAD, OPTIONS product by ID
+router.route('/:id')
+    .get(productController.getProductById)
+    .put(productController.updateProduct)      // Corresponds to updateProduct (PUT)
+    .delete(productController.deleteProduct)
+    .patch(productController.patchProduct)     // Corresponds to patchProduct (PATCH)
+    .head(productController.headProduct)
+    .options(productController.getProductIdOptions);
 
-//   route to view all products
-router.get("/", async (req, res) => {
-  try {
-    const product = await products.find();
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 module.exports = router;

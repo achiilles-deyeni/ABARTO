@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "2981681b-acfd-4170-8f2a-62fc0908fb3b",
+		"name": "Admins",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43336617" 
+	},
+	"item": [
+		{
+			"name": "GET ALL ADMINS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET ADMIN BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/{{adminId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"{{adminId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE AN ADMIN",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"DOB\": \"1985-05-20\",\n  \"phoneNumber\": \"555-123-4567\",\n  \"email\": \"jane.smith@abarto.com\",\n  \"salary\": 75000,\n  \"portfolio\": \"HR Manager\",\n  \"dateEmployed\": \"2019-11-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/admins",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE AN ADMIN",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/{{adminId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"{{adminId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE AN ADMIN (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith-Jones\",\n  \"DOB\": \"1985-05-20\", \n  \"phoneNumber\": \"555-987-6543\",\n  \"email\": \"jane.smith-jones@abarto.com\",\n  \"salary\": 78000,\n  \"portfolio\": \"Senior HR Manager\",\n  \"dateEmployed\": \"2019-11-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/{{adminId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"{{adminId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE AN ADMIN (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"salary\": 80000,\n  \"phoneNumber\": \"555-111-2222\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/{{adminId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"{{adminId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR ADMINS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON ADMINS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE ADMIN",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/{{adminId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"{{adminId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH ADMINS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/admins/search?lastName=Smith",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"admins",
+						"search"
+					],
+					"query": [
+						{
+							"key": "lastName",
+							"value": "Smith"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

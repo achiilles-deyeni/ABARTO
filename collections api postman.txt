@@ -1,0 +1,1367 @@
+
+Okay, understood. I will use `http://localhost:3000/` directly in the URLs for the remaining Postman collection JSONs.
+
+Here are the collections for Wholesale, Security, Reports, Safety, and Chemicals:
+
+**6. Wholesale (`Wholesale.postman_collection.json`)**
+
+```json
+{
+	"info": {
+		"_postman_id": "f6a7b8c9-d0e1-2345-efab-4567890abcde", // New UUID
+		"name": "Wholesale",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID" // Optional: Replace
+	},
+	"item": [
+		{
+			"name": "GET ALL WHOLESALE ORDERS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET WHOLESALE ORDER BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/{{wholesaleOrderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"{{wholesaleOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A WHOLESALE ORDER",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+                    // IMPORTANT: Replace {{productId}} and {{customerId}} with actual IDs
+					"raw": "{\n  \"customerId\": \"CustomerJKL\", \n  \"productId\": \"{{productId}}\", \n  \"quantity\": 100,\n  \"totalPrice\": 18000.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A WHOLESALE ORDER",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/{{wholesaleOrderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"{{wholesaleOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A WHOLESALE ORDER (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+                    // IMPORTANT: Replace {{productId}} and {{customerId}} with actual IDs
+					"raw": "{\n  \"customerId\": \"CustomerABC\",\n  \"productId\": \"{{productId}}\", \n  \"quantity\": 55,\n  \"totalPrice\": 10000.00,\n  \"orderDate\": \"2023-10-21T00:00:00.000Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/{{wholesaleOrderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"{{wholesaleOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A WHOLESALE ORDER (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 60,\n  \"totalPrice\": 10500.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/{{wholesaleOrderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"{{wholesaleOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR WHOLESALE ORDERS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON WHOLESALE ORDERS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE WHOLESALE ORDER",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/{{wholesaleOrderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"{{wholesaleOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH WHOLESALE ORDERS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/wholesale/search?customerId=CustomerABC",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"wholesale",
+						"search"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "CustomerABC"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
+
+**7. Security (`Security.postman_collection.json`)**
+
+```json
+{
+	"info": {
+		"_postman_id": "a7b8c9d0-e1f2-3456-fabc-567890abcde0", // New UUID
+		"name": "Security",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID" // Optional: Replace
+	},
+	"item": [
+		{
+			"name": "GET ALL SECURITY LOGS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET SECURITY LOG BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A SECURITY LOG",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+                    // IMPORTANT: Replace {{adminId}} with an actual Admin ID
+					"raw": "{\n  \"eventType\": \"Unauthorized Access Attempt\",\n  \"level\": \"error\",\n  \"userId\": \"{{adminId}}\", \n  \"details\": \"Failed login attempt for user admin@abarto.com from IP 10.0.0.5\",\n  \"source\": \"Auth Service\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A SECURITY LOG",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A SECURITY LOG (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+                    // Note: Updating logs might not be standard practice. Replace userId if needed.
+					"raw": "{\n  \"timestamp\": \"2023-11-15T10:30:00.000Z\", \n  \"eventType\": \"Login Success\",\n  \"level\": \"info\",\n  \"userId\": \"{{adminId}}\",\n  \"details\": \"Admin logged in successfully - Updated record.\",\n  \"source\": \"192.168.1.100\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A SECURITY LOG (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"details\": \"System setting 'X' modified (Severity updated).\",\n  \"level\": \"critical\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR SECURITY LOGS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON SECURITY LOGS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE SECURITY LOG",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/{{securityLogId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"{{securityLogId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH SECURITY LOGS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/security/search?level=error&eventType=Access",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"security",
+						"search"
+					],
+					"query": [
+						{
+							"key": "level",
+							"value": "error"
+						},
+                        {
+							"key": "eventType",
+							"value": "Access"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
+
+**8. Reports (`Reports.postman_collection.json`)**
+
+```json
+{
+	"info": {
+		"_postman_id": "b8c9d0e1-f2a3-4567-abcd-67890abcdef1", // New UUID
+		"name": "Reports",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID" // Optional: Replace
+	},
+	"item": [
+		{
+			"name": "GET ALL REPORTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET REPORT BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A REPORT",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reportName\": \"Weekly Sales Summary\",\n  \"type\": \"sales\",\n  \"parameters\": {\n    \"startDate\": \"2023-11-06\",\n    \"endDate\": \"2023-11-12\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A REPORT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A REPORT (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reportName\": \"Monthly Inventory Summary - Oct 2023 (Final)\",\n  \"type\": \"inventory\",\n  \"generatedAt\": \"2023-11-01T08:00:00.000Z\",\n  \"parameters\": {\n    \"month\": 10,\n    \"year\": 2023,\n    \"status\": \"final\"\n  },\n  \"filePath\": \"/reports/inventory_oct_2023_final.pdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A REPORT (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reportName\": \"Weekly Sales Summary (Revised)\",\n  \"parameters\": {\n    \"startDate\": \"2023-11-06\",\n    \"endDate\": \"2023-11-12\",\n    \"includeReturns\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR REPORTS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON REPORTS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE REPORT",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH REPORTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/search?type=sales&startDate=2023-11-01",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"search"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "sales"
+						},
+                        {
+							"key": "startDate",
+							"value": "2023-11-01"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
+
+**9. Safety (`Safety.postman_collection.json`)**
+
+```json
+{
+	"info": {
+		"_postman_id": "c9d0e1f2-a3b4-5678-bcde-7890abcdef12", // New UUID
+		"name": "Safety",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID" // Optional: Replace
+	},
+	"item": [
+		{
+			"name": "GET ALL SAFETY EQUIPMENT",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET SAFETY EQUIPMENT BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE SAFETY EQUIPMENT",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"equipmentName\": \"Eye Wash Station C3\",\n  \"nextInspectionDate\": \"2024-05-01\",\n  \"status\": \"ok\",\n  \"location\": \"Lab Area\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE SAFETY EQUIPMENT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE SAFETY EQUIPMENT (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"equipmentName\": \"Fire Extinguisher A1 - Relocated\",\n  \"lastInspectionDate\": \"2023-06-01T00:00:00.000Z\",\n  \"nextInspectionDate\": \"2024-06-01T00:00:00.000Z\",\n  \"status\": \"ok\",\n  \"location\": \"Workshop Area 2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE SAFETY EQUIPMENT (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": \"needs_repair\",\n  \"lastInspectionDate\": \"2023-11-15T00:00:00.000Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR SAFETY EQUIPMENT",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON SAFETY EQUIPMENT COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE SAFETY EQUIPMENT",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/{{safetyEquipmentId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"{{safetyEquipmentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH SAFETY EQUIPMENT",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/safety/search?status=ok&location=Workshop",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"safety",
+						"search"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "ok"
+						},
+                        {
+							"key": "location",
+							"value": "Workshop"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
+
+**10. Chemicals (`Chemicals.postman_collection.json`)**
+
+```json
+{
+	"info": {
+		"_postman_id": "d0e1f2a3-b4c5-6789-cdef-890abcdef123", // New UUID
+		"name": "Chemicals",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID" // Optional: Replace
+	},
+	"item": [
+		{
+			"name": "GET ALL CHEMICALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET CHEMICAL BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A CHEMICAL",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"compoundName\": \"Isopropyl Alcohol\",\n  \"formula\": \"C3H8O\",\n  \"quantity\": 100,\n  \"unit\": \"liters\",\n  \"storageLocation\": \"Flammables Cabinet\",\n  \"safetySheetUrl\": \"/sds/ipa.pdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A CHEMICAL",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A CHEMICAL (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"compoundName\": \"Lubricant Oil Grade 5\",\n  \"formula\": \"N/A\",\n  \"quantity\": 45,\n  \"unit\": \"liters\",\n  \"storageLocation\": \"Chem Cabinet A - Shelf 2\",\n  \"safetySheetUrl\": \"/sds/lube_oil_g5_rev1.pdf\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A CHEMICAL (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 48\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR CHEMICALS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON CHEMICALS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE CHEMICAL",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/{{chemicalId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"{{chemicalId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH CHEMICALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/chemicals/search?storageLocation=Cabinet%20A",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"chemicals",
+						"search"
+					],
+					"query": [
+						{
+							"key": "storageLocation",
+							"value": "Cabinet A"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
+
+Remember to create the `.postman_collection.json` files, paste the corresponding JSON content, and import them into Postman. You will also need to manage the `{{...Id}}` variables either manually or through Postman environments.

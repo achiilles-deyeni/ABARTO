@@ -18,4 +18,5 @@ const EmployeeSchema = new mongoose.Schema({
   },
   dateEmployed: { type: Date, default: Date.now },
 });
+
 module.exports = mongoose.model("Employee", EmployeeSchema);

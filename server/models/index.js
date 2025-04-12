@@ -13,3 +13,15 @@ const machines = require("./machineryPart");
 const wholesale = require("./wholesaleOrder");
 const products = require("./products");
 const safety = require("./safetyEquipment");
+
+module.exports = {
+  Admin,
+  ChemicalCompound,
+  Suppliers,
+  RawMaterials,
+  Employee,
+  MachineryPart,
+  Wholesale,
+  Product,
+  Safety
+};
