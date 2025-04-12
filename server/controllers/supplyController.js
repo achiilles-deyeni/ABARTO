@@ -3,11 +3,35 @@ const Supplier = require('../models/Suppliers'); // Corrected path and assumed m
 // Get all supplies (assuming this means Suppliers now)
 exports.getAllSupplies = async (req, res) => {
   try {
-    const suppliers = await Supplier.find(); // Use correct model name
-    res.status(200).json({ success: true, count: suppliers.length, data: suppliers });
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'name'; // Default sort
+    const order = req.query.order || 'asc';
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalSuppliers = await Supplier.countDocuments();
+    const suppliers = await Supplier.find() // Use correct model name
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalSuppliers,
+        page: page,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalSuppliers / effectiveLimit),
+        count: suppliers.length,
+        data: suppliers
+    });
   } catch (error) {
     console.error('Error fetching suppliers:', error); // Updated log message
-    res.status(500).json({ success: false, error: 'Server error fetching suppliers' }); // Updated error message
+    res.status(500).json({ success: false, error: 'Server error fetching suppliers: ' + error.message }); // Updated error message
   }
 };
 
@@ -131,17 +155,39 @@ exports.deleteSupply = async (req, res) => {
 exports.searchSupplies = async (req, res) => {
   try {
     // Adjust search fields based on Supplier model
-    const { name, email, contactPerson } = req.query;
+    const { name, email, contactPerson, page = 1, limit = 10, sort = 'name', order = 'asc' } = req.query;
     let query = {};
     if (name) query.name = { $regex: name, $options: 'i' };
     if (email) query.email = { $regex: email, $options: 'i' };
     if (contactPerson) query.contactPerson = { $regex: contactPerson, $options: 'i' };
 
-    const suppliers = await Supplier.find(query);
-    res.status(200).json({ success: true, count: suppliers.length, data: suppliers });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingSuppliers = await Supplier.countDocuments(query);
+    const suppliers = await Supplier.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingSuppliers,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingSuppliers / effectiveLimit),
+        count: suppliers.length,
+        data: suppliers
+    });
   } catch (error) {
     console.error('Error searching suppliers:', error);
-    res.status(500).json({ success: false, error: 'Server error searching suppliers' });
+    res.status(500).json({ success: false, error: 'Server error searching suppliers: ' + error.message });
   }
 };
 

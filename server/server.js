@@ -18,6 +18,7 @@ const securityRoute = require("./routes/api/security");
 const reportRoute = require("./routes/api/report");
 const safetyRoute = require("./routes/api/safety");
 const chemicalRoute = require("./routes/api/chemical");
+const authRoute = require("./routes/api/auth"); // Import the new auth route
 // const authRouter = require("./routers/auth"); // Uncomment if needed
 
 // initializing the modules
@@ -37,6 +38,7 @@ app.use("/api/security", securityRoute);
 app.use("/api/reports", reportRoute);
 app.use("/api/safety", safetyRoute);
 app.use("/api/chemicals", chemicalRoute);
+app.use("/api/auth", authRoute); // Use the auth route
 // app.use("/api/auth", authRouter); // Uncomment if needed
 
 // Initialization of the port

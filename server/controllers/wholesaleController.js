@@ -3,13 +3,37 @@ const WholesaleOrder = require('../models/wholesaleOrder'); // Corrected path an
 // Get all wholesale records
 exports.getAllWholesaleRecords = async (req, res) => {
   try {
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'orderDate'; // Default sort
+    const order = req.query.order || 'desc'; // Default newest first
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalRecords = await WholesaleOrder.countDocuments();
     const records = await WholesaleOrder.find()
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(effectiveLimit)
         // .populate('customerId') // Optional: Populate customer details if using refs
         // .populate('productId'); // Optional: Populate product details if using refs
-    res.status(200).json({ success: true, count: records.length, data: records });
+
+    res.status(200).json({
+        success: true,
+        total: totalRecords,
+        page: page,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalRecords / effectiveLimit),
+        count: records.length,
+        data: records
+    });
   } catch (error) {
     console.error('Error fetching wholesale records:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching wholesale records' });
+    res.status(500).json({ success: false, error: 'Server error fetching wholesale records: ' + error.message });
   }
 };
 
@@ -133,7 +157,7 @@ exports.deleteWholesaleRecord = async (req, res) => {
 // Search wholesale records
 exports.searchWholesaleRecords = async (req, res) => {
   try {
-    const { customerId, productId, minQuantity, startDate, endDate } = req.query;
+    const { customerId, productId, minQuantity, startDate, endDate, page = 1, limit = 10, sort = 'orderDate', order = 'desc' } = req.query;
     let query = {};
     if (customerId) query.customerId = customerId; // Assuming direct ID match or use regex if searching name
     if (productId) query.productId = productId;
@@ -144,11 +168,35 @@ exports.searchWholesaleRecords = async (req, res) => {
         if (endDate) query.orderDate.$lte = new Date(endDate);
     }
 
-    const records = await WholesaleOrder.find(query);
-    res.status(200).json({ success: true, count: records.length, data: records });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingRecords = await WholesaleOrder.countDocuments(query);
+    const records = await WholesaleOrder.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit)
+      // .populate('customerId') // Add populate here if needed for search results
+      // .populate('productId');
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingRecords,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingRecords / effectiveLimit),
+        count: records.length,
+        data: records
+    });
   } catch (error) {
     console.error('Error searching wholesale records:', error);
-    res.status(500).json({ success: false, error: 'Server error searching wholesale records' });
+    res.status(500).json({ success: false, error: 'Server error searching wholesale records: ' + error.message });
   }
 };
 

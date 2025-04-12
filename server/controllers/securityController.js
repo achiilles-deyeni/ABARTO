@@ -3,12 +3,35 @@ const SecurityLog = require('../models/securityLog'); // Assuming ../models/secu
 // Get all security items (logs)
 exports.getAllSecurityItems = async (req, res) => {
   try {
-    // Add pagination or filtering as needed for potentially large log collections
-    const logs = await SecurityLog.find().sort({ timestamp: -1 }); // Sort by newest first
-    res.status(200).json({ success: true, count: logs.length, data: logs });
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25; // Logs might need larger default limit
+    const sort = req.query.sort || 'timestamp'; // Default sort
+    const order = req.query.order || 'desc'; // Default to newest first
+    const skip = (page - 1) * limit;
+    const maxLimit = 200; // Allow higher limit for logs
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalLogs = await SecurityLog.countDocuments();
+    const logs = await SecurityLog.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalLogs,
+        page: page,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalLogs / effectiveLimit),
+        count: logs.length,
+        data: logs
+    });
   } catch (error) {
     console.error('Error fetching security logs:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching security logs' });
+    res.status(500).json({ success: false, error: 'Server error fetching security logs: ' + error.message });
   }
 };
 
@@ -132,7 +155,7 @@ exports.deleteSecurityItem = async (req, res) => {
 // Search security items (logs)
 exports.searchSecurityItems = async (req, res) => {
   try {
-    const { eventType, level, userId, startDate, endDate } = req.query;
+    const { eventType, level, userId, startDate, endDate, page = 1, limit = 25, sort = 'timestamp', order = 'desc' } = req.query;
     let query = {};
     if (eventType) query.eventType = { $regex: eventType, $options: 'i' };
     if (level) query.level = level;
@@ -143,11 +166,33 @@ exports.searchSecurityItems = async (req, res) => {
         if (endDate) query.timestamp.$lte = new Date(endDate);
     }
 
-    const logs = await SecurityLog.find(query).sort({ timestamp: -1 });
-    res.status(200).json({ success: true, count: logs.length, data: logs });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 200;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingLogs = await SecurityLog.countDocuments(query);
+    const logs = await SecurityLog.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingLogs,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingLogs / effectiveLimit),
+        count: logs.length,
+        data: logs
+    });
   } catch (error) {
     console.error('Error searching security logs:', error);
-    res.status(500).json({ success: false, error: 'Server error searching security logs' });
+    res.status(500).json({ success: false, error: 'Server error searching security logs: ' + error.message });
   }
 };
 

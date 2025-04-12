@@ -3,10 +3,37 @@ const Admin = require('../models/admin');
 // Get all administrators
 exports.getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find();
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'lastName'; // Default sort by last name
+    const order = req.query.order || 'asc'; // Default order
+    const skip = (page - 1) * limit;
+
+    // Validate limit
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count
+    const totalAdmins = await Admin.countDocuments();
+
+    // Execute query
+    const admins = await Admin.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
     res.status(200).json({
       success: true,
-      count: admins.length,
+      total: totalAdmins,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalAdmins / effectiveLimit),
+      count: admins.length, // Count on the current page
       data: admins
     });
   } catch (error) {
@@ -139,15 +166,44 @@ exports.deleteAdmin = async (req, res) => {
 // Search administrators
 exports.searchAdmins = async (req, res) => {
   try {
-    const { email, lastName, firstName } = req.query;
+    const { email, lastName, firstName, page = 1, limit = 10, sort = 'lastName', order = 'asc' } = req.query;
     let query = {};
 
     if (email) query.email = { $regex: email, $options: 'i' };
     if (lastName) query.lastName = { $regex: lastName, $options: 'i' };
     if (firstName) query.firstName = { $regex: firstName, $options: 'i' };
 
-    const admins = await Admin.find(query);
-    res.status(200).json({ success: true, count: admins.length, data: admins });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Validate limit
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count matching the search query
+    const totalMatchingAdmins = await Admin.countDocuments(query);
+
+    // Execute query with filtering, pagination, sorting, limiting
+    const admins = await Admin.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingAdmins,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingAdmins / effectiveLimit),
+        count: admins.length, // Count on the current page
+        data: admins
+    });
   } catch (error) {
     console.error('Error searching admins:', error);
     res.status(500).json({ success: false, error: 'Server error searching administrators' });

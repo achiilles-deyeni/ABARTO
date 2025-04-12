@@ -1,25 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const materialController = require('../../controllers/materialController');
+const { protect } = require('../../middleware/authMiddleware');
 
 // GET all materials, POST new material, HEAD, OPTIONS
 router.route('/')
-    .get(materialController.getAllMaterials)
-    .post(materialController.createMaterial)
-    .head(materialController.headMaterials)       // Add HEAD
+    .get(protect, materialController.getAllMaterials)
+    .post(protect, materialController.createMaterial)
+    .head(protect, materialController.headMaterials)       // Add HEAD
     .options(materialController.getMaterialOptions); // Add OPTIONS
 
 // Search materials - MUST come BEFORE the /:id route
 router.route('/search')
-    .get(materialController.searchMaterials);
+    .get(protect, materialController.searchMaterials);
 
 // GET, PUT, DELETE, PATCH, HEAD, OPTIONS material by ID
 router.route('/:id')
-    .get(materialController.getMaterialById)
-    .put(materialController.updateMaterial)
-    .delete(materialController.deleteMaterial)
-    .patch(materialController.patchMaterial)
-    .head(materialController.headMaterial)       // Add HEAD
-    .options(materialController.getMaterialIdOptions); // Add OPTIONS
+    .get(protect, materialController.getMaterialById)
+    .put(protect, materialController.updateMaterial)
+    .delete(protect, materialController.deleteMaterial)
+    .patch(protect, materialController.patchMaterial)
+    .head(protect, materialController.headMaterial)       // Add HEAD
+    .options(protect, materialController.getMaterialIdOptions); // Add OPTIONS
 
 module.exports = router;

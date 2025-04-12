@@ -3,15 +3,35 @@ const MachineryPart = require('../models/machineryPart'); // Assuming model name
 // Get all machinery parts
 exports.getAllMachinery = async (req, res) => {
   try {
-    const machines = await MachineryPart.find();
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'name'; // Default sort by name
+    const order = req.query.order || 'asc';
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMachinery = await MachineryPart.countDocuments();
+    const machines = await MachineryPart.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
     res.status(200).json({
       success: true,
+      total: totalMachinery,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalMachinery / effectiveLimit),
       count: machines.length,
       data: machines
     });
   } catch (error) {
     console.error('Error fetching machinery:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching machinery' });
+    res.status(500).json({ success: false, error: 'Server error fetching machinery: ' + error.message });
   }
 };
 
@@ -120,18 +140,40 @@ exports.deleteMachinery = async (req, res) => {
 // Search machinery parts
 exports.searchMachinery = async (req, res) => {
   try {
-    const { name, type, minQuantity } = req.query;
+    const { name, type, minQuantity, page = 1, limit = 10, sort = 'name', order = 'asc' } = req.query;
     let query = {};
 
     if (name) query.name = { $regex: name, $options: 'i' };
     if (type) query.type = { $regex: type, $options: 'i' };
     if (minQuantity) query.quantity = { $gte: parseInt(minQuantity) };
 
-    const machines = await MachineryPart.find(query);
-    res.status(200).json({ success: true, count: machines.length, data: machines });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingMachinery = await MachineryPart.countDocuments(query);
+    const machines = await MachineryPart.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingMachinery,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingMachinery / effectiveLimit),
+        count: machines.length,
+        data: machines
+    });
   } catch (error) {
     console.error('Error searching machinery:', error);
-    res.status(500).json({ success: false, error: 'Server error searching machinery' });
+    res.status(500).json({ success: false, error: 'Server error searching machinery: ' + error.message });
   }
 };
 

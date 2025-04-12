@@ -1,14 +1,38 @@
 const Report = require('../models/report'); // NOTE: Create ../models/report.js
+const Product = require('../models/products'); // Need Product model for aggregation
 
 // Get all reports (or report configurations)
 exports.getAllReports = async (req, res) => {
   try {
-    // Add filtering/pagination as needed
-    const reports = await Report.find().sort({ generatedAt: -1 }); // Example sort
-    res.status(200).json({ success: true, count: reports.length, data: reports });
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'generatedAt'; // Default sort
+    const order = req.query.order || 'desc'; // Default to newest first
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalReports = await Report.countDocuments();
+    const reports = await Report.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+      success: true,
+      total: totalReports,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalReports / effectiveLimit),
+      count: reports.length,
+      data: reports
+    });
   } catch (error) {
     console.error('Error fetching reports:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching reports' });
+    res.status(500).json({ success: false, error: 'Server error fetching reports: ' + error.message });
   }
 };
 
@@ -137,7 +161,7 @@ exports.deleteReport = async (req, res) => {
 // Search reports
 exports.searchReports = async (req, res) => {
   try {
-    const { reportName, type, startDate, endDate } = req.query;
+    const { reportName, type, startDate, endDate, page = 1, limit = 10, sort = 'generatedAt', order = 'desc' } = req.query;
     let query = {};
     if (reportName) query.reportName = { $regex: reportName, $options: 'i' };
     if (type) query.type = { $regex: type, $options: 'i' };
@@ -148,11 +172,33 @@ exports.searchReports = async (req, res) => {
     }
     // Add searching within parameters if needed: query['parameters.someKey'] = value
 
-    const reports = await Report.find(query).sort({ generatedAt: -1 });
-    res.status(200).json({ success: true, count: reports.length, data: reports });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingReports = await Report.countDocuments(query);
+    const reports = await Report.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingReports,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingReports / effectiveLimit),
+        count: reports.length,
+        data: reports
+    });
   } catch (error) {
     console.error('Error searching reports:', error);
-    res.status(500).json({ success: false, error: 'Server error searching reports' });
+    res.status(500).json({ success: false, error: 'Server error searching reports: ' + error.message });
   }
 };
 
@@ -201,4 +247,48 @@ exports.headReport = async (req, res) => {
 exports.getReportIdOptions = (req, res) => {
   res.set('Allow', 'GET, PUT, DELETE, PATCH, HEAD, OPTIONS');
   res.status(200).end();
+};
+
+// AGGREGATION EXAMPLE: Get Product Price Stats
+exports.getProductPriceStats = async (req, res) => {
+  try {
+    const stats = await Product.aggregate([
+      {
+        $group: {
+          _id: null, // Group all products together
+          totalProducts: { $sum: 1 },
+          averagePrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+          // Optionally group by category:
+          // _id: '$category',
+          // totalProducts: { $sum: 1 },
+          // averagePrice: { $avg: '$price' },
+          // etc...
+        }
+      }
+    ]);
+
+    if (!stats || stats.length === 0) {
+        // Handle case where there are no products
+        return res.status(200).json({ 
+            success: true, 
+            message: "No products found to calculate stats.", 
+            data: { 
+                totalProducts: 0, 
+                averagePrice: 0, 
+                minPrice: 0, 
+                maxPrice: 0 
+            } 
+        });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: stats[0] // The result is an array with one document
+    });
+  } catch (error) {
+    console.error('Error calculating product price stats:', error);
+    res.status(500).json({ success: false, error: 'Server error calculating product stats: ' + error.message });
+  }
 };

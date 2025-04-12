@@ -3,11 +3,35 @@ const SafetyEquipment = require('../models/safetyEquipment');
 // Get all safety equipment items
 exports.getAllSafetyItems = async (req, res) => {
   try {
-    const items = await SafetyEquipment.find();
-    res.status(200).json({ success: true, count: items.length, data: items });
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'nextInspectionDate'; // Default sort
+    const order = req.query.order || 'asc';
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalItems = await SafetyEquipment.countDocuments();
+    const items = await SafetyEquipment.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalItems,
+        page: page,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalItems / effectiveLimit),
+        count: items.length,
+        data: items
+    });
   } catch (error) {
     console.error('Error fetching safety equipment:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching safety equipment' });
+    res.status(500).json({ success: false, error: 'Server error fetching safety equipment: ' + error.message });
   }
 };
 
@@ -130,7 +154,7 @@ exports.deleteSafetyItem = async (req, res) => {
 // Search safety equipment items
 exports.searchSafetyItems = async (req, res) => {
   try {
-    const { equipmentName, status, location, inspectionDueBefore } = req.query;
+    const { equipmentName, status, location, inspectionDueBefore, page = 1, limit = 10, sort = 'nextInspectionDate', order = 'asc' } = req.query;
     let query = {};
     if (equipmentName) query.equipmentName = { $regex: equipmentName, $options: 'i' };
     if (status) query.status = status;
@@ -139,11 +163,33 @@ exports.searchSafetyItems = async (req, res) => {
         query.nextInspectionDate = { $lte: new Date(inspectionDueBefore) };
     }
 
-    const items = await SafetyEquipment.find(query).sort({ nextInspectionDate: 1 }); // Sort by next inspection due
-    res.status(200).json({ success: true, count: items.length, data: items });
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingItems = await SafetyEquipment.countDocuments(query);
+    const items = await SafetyEquipment.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+        success: true,
+        total: totalMatchingItems,
+        page: pageNum,
+        limit: effectiveLimit,
+        totalPages: Math.ceil(totalMatchingItems / effectiveLimit),
+        count: items.length,
+        data: items
+    });
   } catch (error) {
     console.error('Error searching safety equipment:', error);
-    res.status(500).json({ success: false, error: 'Server error searching safety equipment' });
+    res.status(500).json({ success: false, error: 'Server error searching safety equipment: ' + error.message });
   }
 };
 

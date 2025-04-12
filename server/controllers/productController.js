@@ -3,16 +3,43 @@ const Product = require('../models/products'); // Assuming the model is exported
 // Get all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'createdAt'; // Default sort field
+    const order = req.query.order || 'asc'; // Default order 'asc' or 'desc'
+    const skip = (page - 1) * limit;
+
+    // Validate limit
+    const maxLimit = 100; // Set a max limit for safety
+    const effectiveLimit = Math.min(limit, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count for pagination metadata
+    const totalProducts = await Product.countDocuments();
+
+    // Execute query with pagination, sorting, limiting
+    const products = await Product.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
     res.status(200).json({
       success: true,
-      count: products.length,
+      total: totalProducts,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalProducts / effectiveLimit),
+      count: products.length, // Count on the current page
       data: products
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error fetching products: ' + error.message
     });
   }
 };
@@ -139,11 +166,22 @@ exports.deleteProduct = async (req, res) => {
 // Search products
 exports.searchProducts = async (req, res) => {
   try {
-    const { name, category, minPrice, maxPrice } = req.query;
+    const { name, category, minPrice, maxPrice, page = 1, limit = 10, sort = 'createdAt', order = 'asc' } = req.query;
     let query = {};
 
     if (name) query.name = { $regex: name, $options: 'i' }; // Case-insensitive regex search
-    if (category) query.category = { $regex: category, $options: 'i' };
+    
+    // Handle single or multiple categories
+    if (category) {
+      const categories = category.split(',').map(cat => cat.trim());
+      // If multiple categories, use $in with case-insensitive regex for each
+      if (categories.length > 1) {
+          query.category = { $in: categories.map(cat => new RegExp(`^${cat}$`, 'i')) }; // Exact match, case-insensitive
+      } else if (categories.length === 1 && categories[0]) {
+          // If only one category, use case-insensitive regex (allows partial match)
+          query.category = { $regex: categories[0], $options: 'i' };
+      }
+    }
 
     // Add price range query if provided
     if (minPrice || maxPrice) {
@@ -152,17 +190,41 @@ exports.searchProducts = async (req, res) => {
         if (maxPrice) query.price.$lte = parseFloat(maxPrice);
     }
 
-    const products = await Product.find(query);
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Validate limit
+    const maxLimit = 100; // Set a max limit
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count matching the search query
+    const totalMatchingProducts = await Product.countDocuments(query);
+
+    // Execute query with filtering, pagination, sorting, limiting
+    const products = await Product.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
 
     res.status(200).json({
       success: true,
-      count: products.length,
+      total: totalMatchingProducts,
+      page: pageNum,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalMatchingProducts / effectiveLimit),
+      count: products.length, // Count on the current page
       data: products
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error searching products: ' + error.message
     });
   }
 };
@@ -252,4 +314,52 @@ exports.patchProduct = async (req, res) => {
         res.status(500).json({ success: false, error: 'Server error during product patch' });
     }
   }
+};
+
+// BULK OPERATIONS
+exports.bulkCreateProducts = async (req, res) => {
+    // Expect req.body to be an array of product objects
+    if (!Array.isArray(req.body)) {
+        return res.status(400).json({ success: false, error: 'Request body must be an array of products.' });
+    }
+    if (req.body.length === 0) {
+        return res.status(400).json({ success: false, error: 'Request body array cannot be empty.' });
+    }
+
+    try {
+        // Options: { ordered: false } allows continuing even if some inserts fail
+        // { ordered: true } stops on the first error (default)
+        const options = { ordered: false, runValidators: true }; 
+        const result = await Product.insertMany(req.body, options);
+        
+        res.status(201).json({ 
+            success: true, 
+            message: `Successfully inserted ${result.length} products.`, 
+            insertedCount: result.length,
+            // data: result // Optionally return the inserted documents
+        });
+
+    } catch (error) {
+        console.error("Bulk insert error:", error);
+        // Check if it's a bulk write error with validation issues
+        if (error.name === 'MongoBulkWriteError' && error.writeErrors) {
+            const validationErrors = error.writeErrors.map(err => ({
+                index: err.index,
+                code: err.code,
+                message: err.errmsg
+            }));
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Bulk operation failed due to validation errors.', 
+                validationErrors 
+            });
+        } else if (error.name === 'ValidationError') {
+            // This might catch validation errors if runValidators triggers before insertMany 
+            // (less likely with insertMany directly, but good to have)
+             res.status(400).json({ success: false, error: error.message });
+        }
+        else {
+             res.status(500).json({ success: false, error: 'Server error during bulk product creation.' });
+        }
+    }
 }; 
