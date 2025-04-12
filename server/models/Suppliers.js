@@ -1,12 +1,38 @@
 const mongoose = require("mongoose");
-// industrial supply model
-const SuppliersSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  description: { type: String, required: true },
-  price: { type: Number, required: true },
-  quantity: { type: Number, required: true },
-  category: { type: String, required: true },
-  admin: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true },
+// Supplier model
+const SupplierSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Supplier name is required'],
+    trim: true,
+    unique: true, // Keep name unique for suppliers
+    index: true
+  },
+  contactPerson: {
+    type: String,
+    trim: true
+  },
+  email: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    // Add unique constraint and validation if email should be unique
+    // unique: true,
+    // match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.'],
+    index: true
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  address: {
+    type: String,
+    trim: true
+  }
+  // Add any other relevant fields like 'website', 'notes', etc.
+}, {
+  timestamps: true // Add createdAt and updatedAt fields
 });
 
-module.exports = mongoose.model("IndustrialSupply", SuppliersSchema);
+// Export using the singular name 'Supplier'
+module.exports = mongoose.model("Supplier", SupplierSchema);
