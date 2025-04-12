@@ -14,6 +14,10 @@ router.route('/')
 router.route('/search')
     .get(protect, supplyController.searchSupplies);      // Placeholder: Implement in controller
 
+// BULK OPERATIONS ROUTE - Place before /:id
+router.route('/bulk')
+    .post(protect, supplyController.bulkCreateSuppliers);
+
 // GET, PUT, DELETE, PATCH, HEAD, OPTIONS supply by ID
 router.route('/:id')
     .get(protect, supplyController.getSupplyById)       // Placeholder: Implement in controller

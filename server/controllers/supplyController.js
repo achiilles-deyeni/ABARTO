@@ -237,3 +237,46 @@ exports.getSupplyIdOptions = (req, res) => {
   res.set('Allow', 'GET, PUT, DELETE, PATCH, HEAD, OPTIONS');
   res.status(200).end();
 };
+
+// BULK OPERATIONS (Suppliers)
+exports.bulkCreateSuppliers = async (req, res) => {
+    // Expect req.body to be an array of supplier objects
+    if (!Array.isArray(req.body)) {
+        return res.status(400).json({ success: false, error: 'Request body must be an array of suppliers.' });
+    }
+    if (req.body.length === 0) {
+        return res.status(400).json({ success: false, error: 'Request body array cannot be empty.' });
+    }
+
+    try {
+        const options = { ordered: false, runValidators: true }; 
+        const result = await Supplier.insertMany(req.body, options);
+        
+        res.status(201).json({ 
+            success: true, 
+            message: `Successfully inserted ${result.length} suppliers.`, 
+            insertedCount: result.length,
+            // data: result // Optionally return inserted documents
+        });
+
+    } catch (error) {
+        console.error("Bulk supplier insert error:", error);
+        if (error.name === 'MongoBulkWriteError' && error.writeErrors) {
+            const validationErrors = error.writeErrors.map(err => ({
+                index: err.index,
+                code: err.code,
+                message: err.errmsg
+            }));
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Bulk operation failed due to validation errors.', 
+                validationErrors 
+            });
+        } else if (error.name === 'ValidationError') {
+             res.status(400).json({ success: false, error: error.message });
+        }
+        else {
+             res.status(500).json({ success: false, error: 'Server error during bulk supplier creation.' });
+        }
+    }
+};
