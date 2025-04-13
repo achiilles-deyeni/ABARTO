@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Admin = require("../../models/admin");
 
-// route to add/register an administrator
+// Route to add/register an administrator
 router.post("/register-admin", async (req, res) => {
   try {
     const {
@@ -15,12 +15,22 @@ router.post("/register-admin", async (req, res) => {
       portfolio,
       dateEmployed,
     } = req.body;
+
+    // Input validation
+    if (!firstName || !lastName || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "First name, last name, and email are required!",
+      });
+    }
+
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res
-        .status(402)
+        .status(409) // Changed from 402 to 409 (Conflict)
         .json({ success: false, message: "Administrator already exists" });
     }
+
     const newAdmin = new Admin({
       firstName,
       lastName,
@@ -33,13 +43,16 @@ router.post("/register-admin", async (req, res) => {
     });
 
     const result = await newAdmin.save();
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Administrator added successfully.",
       result,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 });
 
@@ -47,46 +60,104 @@ router.post("/register-admin", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const admins = await Admin.find();
-    res.json(admins);
+    return res.status(200).json({
+      success: true,
+      count: admins.length,
+      admins,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
 
-// route to update an administrator
-router.patch("/:id", async (req, res) => {
+// Route to get a specific administrator
+router.get("/:id", async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
+
     if (!admin) {
-      return res.status(404).json({ message: "Administrator not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Administrator not found",
+      });
     }
-    admin.firstName = req.body.firstName;
-    admin.lastName = req.body.lastName;
-    admin.DOB = req.body.DOB;
-    admin.phoneNumber = req.body.phoneNumber;
-    admin.email = req.body.email;
-    admin.salary = req.body.salary;
-    admin.portfolio = req.body.portfolio;
-    admin.dateEmployed = req.body.dateEmployed;
-    await admin.save();
-    res.json(admin);
+
+    return res.status(200).json({
+      success: true,
+      admin,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+// Route to update an administrator
+router.patch("/:id", async (req, res) => {
+  try {
+    // Using findByIdAndUpdate for better atomic updates
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        DOB: req.body.DOB,
+        phoneNumber: req.body.phoneNumber,
+        email: req.body.email,
+        salary: req.body.salary,
+        portfolio: req.body.portfolio,
+        dateEmployed: req.body.dateEmployed,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedAdmin) {
+      return res.status(404).json({
+        success: false,
+        message: "Administrator not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Administrator updated successfully",
+      admin: updatedAdmin,
+    });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 });
 
 // Route to delete an administrator
 router.delete("/:id", async (req, res) => {
   try {
-    const admin = Admin.findById(req.params.id);
-    if (!admin) {
-      res.status(500).json({ message: "Administrator not found" });
+    const deletedAdmin = await Admin.findByIdAndDelete(req.params.id);
+
+    if (!deletedAdmin) {
+      return res.status(404).json({
+        // Changed from 500 to 404
+        success: false,
+        message: "Administrator not found",
+      });
     }
-    await admin.remove();
-    res.status(200).json({ message: "Administrator deleted successfully" });
+
+    return res.status(200).json({
+      success: true,
+      message: "Administrator deleted successfully",
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
-
-module.exports = router; // Exporting the router
+module.exports = router;

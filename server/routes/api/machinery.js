@@ -6,70 +6,147 @@ const machines = require("../../models/machineryPart");
 router.post("/insert-machine", async (req, res) => {
   try {
     const { name, type, quantity, price, description } = req.body;
-    const machine = await findOne({ name });
+
+    // Input validation
+    if (!name || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and type are required!",
+      });
+    }
+
+    const machine = await machines.findOne({ name });
     if (machine) {
       return res
-        .status(402)
-        .json({ success: false, message: "machine already exists!" });
+        .status(409) // Changed from 402 to 409 (Conflict)
+        .json({ success: false, message: "Machine already exists!" });
     }
-    const newmachine = new machines({
+
+    const newMachine = new machines({
       name,
       type,
       quantity,
       price,
       description,
     });
-    const result = newmachine.save();
-    res.status(201).json({
+
+    const result = await newMachine.save();
+
+    return res.status(201).json({
       success: true,
-      message: "machine added successfully!",
+      message: "Machine added successfully!",
       result,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
 
-//   route to update a machine
+// Route to update a machine
 router.patch("/:id", async (req, res) => {
   try {
-    const machine = machines.findById(req.params.id);
-    if (!machine) {
-      res.status(404).json({ message: "machine not found!" });
+    // Using findByIdAndUpdate for atomic updates
+    const updatedMachine = await machines.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        price: req.body.price,
+        description: req.body.description,
+        quantity: req.body.quantity,
+        type: req.body.type,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedMachine) {
+      return res.status(404).json({
+        success: false,
+        message: "Machine not found!",
+      });
     }
-    machines.name = req.body.name;
-    machines.price = req.body.price;
-    machines.description = req.body.description;
-    machines.quantity = req.body.quantity;
-    machines.type = req.body.type;
-    await machine.save();
-    res.json(machine);
+
+    return res.status(200).json({
+      success: true,
+      message: "Machine updated successfully!",
+      machine: updatedMachine,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
 
-//   Route to delete a machine
+// Route to delete a machine
+router.delete("/:id", async (req, res) => {
+  // Changed from GET to DELETE
+  try {
+    const deletedMachine = await machines.findByIdAndDelete(req.params.id); // Use params, not body
+
+    if (!deletedMachine) {
+      return res.status(404).json({
+        success: false,
+        message: "Machine not found!",
+      });
+    }
+
+    return res.status(200).json({
+      // Changed from 500 to 200
+      success: true,
+      message: "Machine deleted successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+// Route to get a specific machine
 router.get("/:id", async (req, res) => {
   try {
-    const machine = machines.findById(req.body.id);
+    const machine = await machines.findById(req.params.id);
+
     if (!machine) {
-      res.status(404).json({ message: "machine not found!" });
+      return res.status(404).json({
+        success: false,
+        message: "Machine not found!",
+      });
     }
-    await machine.remove();
-    res.status(500).json({ message: "machine deleted successfully" });
+
+    return res.status(200).json({
+      success: true,
+      machine,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
 
-//   route to view all machines
+// Route to view all machines
 router.get("/", async (req, res) => {
   try {
-    const machine = machines.find();
-    res.json(machine);
+    const machinesList = await machines.find();
+
+    return res.status(200).json({
+      success: true,
+      count: machinesList.length,
+      machines: machinesList,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 });
+
 module.exports = router;

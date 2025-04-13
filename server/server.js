@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/admins", adminRoute);
 app.use("/products", productsRoute);
 app.use("/machines", machinesRoute);
-app.use("/rawmaterials", rawMaterialsRoute);
+app.use("/materials", rawMaterialsRoute);
 
 // Initialization of the port
 app.listen(3000 || process.env.PORT, () => {
