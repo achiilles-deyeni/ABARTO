@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const machines = require("../../models/machineryPart");
-
+const machines = require("../../models/machines");
 // Route to add machines
 router.post("/insert-machine", async (req, res) => {
   try {

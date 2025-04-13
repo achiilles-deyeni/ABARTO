@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const products = require("../../models/products");
+const productController = require("../../controllers/productController");
 
 // Route to add products
 router.post("/add-product", async (req, res) => {
@@ -143,5 +143,4 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
 module.exports = router;

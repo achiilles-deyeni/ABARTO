@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const rawMaterials = require("../../models/rawMaterial");
-
+const rawMaterials = require("../../models/materials");
 // Route to add raw materials
-router.post("/insert-rawMaterial", async (req, res) => {
+router.post("/insert-material", async (req, res) => {
   try {
     const { name, source, quantity, price, dateProvided } = req.body;
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Admin = require("../../models/admin");
+const adminController = require("../../controllers/adminController");
+const Admin = require("../../models/admin"); // Assuming you have a model for Admin
 
 // Route to add/register an administrator
 router.post("/register-admin", async (req, res) => {
