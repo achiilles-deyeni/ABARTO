@@ -1,6 +1,7 @@
 // Importing the needed modules
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cors = require('cors'); // Import cors package
 const app = express();
 
 // Importing the database configuration
@@ -21,6 +22,17 @@ const chemicalRoute = require("./routes/api/chemical");
 const authRoute = require("./routes/api/auth"); // Import the new auth route
 // const authRouter = require("./routers/auth"); // Uncomment if needed
 
+// Import Error Handler Middleware
+const errorHandler = require('./middleware/errorHandler');
+
+// Enable CORS
+// IMPORTANT: For development, allow specific origin. For production, configure allowed origins more strictly.
+const corsOptions = {
+    origin: 'http://localhost:5173', // Allow requests from your React app
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
+
 // initializing the modules
 app.use(cookieParser());
 app.use(express.json());
@@ -40,6 +52,9 @@ app.use("/api/safety", safetyRoute);
 app.use("/api/chemicals", chemicalRoute);
 app.use("/api/auth", authRoute); // Use the auth route
 // app.use("/api/auth", authRouter); // Uncomment if needed
+
+// Apply Error Handling Middleware (AFTER all routes)
+app.use(errorHandler);
 
 // Initialization of the port
 const PORT = process.env.PORT || 3000;
