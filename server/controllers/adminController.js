@@ -1,255 +1,112 @@
-const Admin = require('../models/admin');
+const adminService = require('../services/adminService');
+const { getPaginationParams } = require('../utils/pagination');
+const asyncHandler = require('../utils/asyncHandler');
 
-// Get all administrators
-exports.getAllAdmins = async (req, res) => {
-  try {
-    // Pagination, Sorting, Limiting
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const sort = req.query.sort || 'lastName'; // Default sort by last name
-    const order = req.query.order || 'asc'; // Default order
-    const skip = (page - 1) * limit;
+// Get all admins
+exports.getAllAdmins = asyncHandler(async (req, res, next) => {
+  const paginationParams = getPaginationParams(req.query, 'lastName', 'asc'); // Default sort for admins
+  const { admins, totalAdmins } = await adminService.getAllAdmins(paginationParams);
 
-    // Validate limit
-    const maxLimit = 100;
-    const effectiveLimit = Math.min(limit, maxLimit);
+  res.status(200).json({
+    success: true,
+    total: totalAdmins,
+    page: paginationParams.page,
+    limit: paginationParams.limit,
+    totalPages: Math.ceil(totalAdmins / paginationParams.limit),
+    count: admins.length,
+    data: admins
+  });
+});
 
-    // Build sort options
-    const sortOptions = {};
-    sortOptions[sort] = order === 'desc' ? -1 : 1;
-
-    // Get total count
-    const totalAdmins = await Admin.countDocuments();
-
-    // Execute query
-    const admins = await Admin.find()
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(effectiveLimit);
-
-    res.status(200).json({
-      success: true,
-      total: totalAdmins,
-      page: page,
-      limit: effectiveLimit,
-      totalPages: Math.ceil(totalAdmins / effectiveLimit),
-      count: admins.length, // Count on the current page
-      data: admins
-    });
-  } catch (error) {
-    console.error('Error fetching admins:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching administrators' });
+// Get a single admin by ID
+exports.getAdminById = asyncHandler(async (req, res, next) => {
+  const admin = await adminService.getAdminById(req.params.id);
+  if (!admin) {
+    return res.status(404).json({ success: false, error: 'Admin not found' });
   }
-};
+  res.status(200).json({ success: true, data: admin });
+});
 
-// Get a single administrator by ID
-exports.getAdminById = async (req, res) => {
-  try {
-    const admin = await Admin.findById(req.params.id);
-    if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
-    }
-    res.status(200).json({ success: true, data: admin });
-  } catch (error) {
-    console.error('Error fetching admin by ID:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error fetching administrator' });
+// Create a new admin
+exports.createAdmin = asyncHandler(async (req, res, next) => {
+  // Add validation here or via middleware later
+  const admin = await adminService.createAdmin(req.body);
+  res.status(201).json({ success: true, data: admin });
+});
+
+// Update an admin (PUT - full update)
+exports.updateAdmin = asyncHandler(async (req, res, next) => {
+    // Ensure password is not accidentally wiped if not provided
+    // If password field is optional on PUT, logic might need adjustment
+  const admin = await adminService.updateAdmin(req.params.id, req.body);
+  if (!admin) {
+    return res.status(404).json({ success: false, error: 'Admin not found' });
   }
-};
+  res.status(200).json({ success: true, data: admin });
+});
 
-// Create a new administrator (Register)
-exports.createAdmin = async (req, res) => {
-  try {
-    const {
-      firstName,
-      lastName,
-      DOB,
-      phoneNumber,
-      email,
-      salary,
-      portfolio,
-      dateEmployed,
-      // Add password handling if required for admins
-    } = req.body;
-
-    // Basic validation
-    if (!firstName || !lastName || !email) {
-      return res.status(400).json({ success: false, message: 'Missing required fields: firstName, lastName, email' });
-    }
-
-    const existingAdmin = await Admin.findOne({ email });
-    if (existingAdmin) {
-      return res.status(409).json({ success: false, message: 'Administrator with this email already exists' });
-    }
-
-    // Add password hashing here if implementing authentication
-    // const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const newAdmin = new Admin({
-      firstName,
-      lastName,
-      DOB,
-      phoneNumber,
-      email,
-      salary,
-      portfolio,
-      dateEmployed,
-      // password: hashedPassword,
-    });
-
-    const savedAdmin = await newAdmin.save();
-    // Avoid sending back sensitive info like password hash
-    const resultAdmin = savedAdmin.toObject();
-    // delete resultAdmin.password;
-
-    res.status(201).json({ success: true, data: resultAdmin });
-  } catch (error) {
-    console.error('Error creating admin:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else {
-        res.status(500).json({ success: false, error: 'Server error creating administrator' });
-    }
+// Delete an admin
+exports.deleteAdmin = asyncHandler(async (req, res, next) => {
+  const admin = await adminService.deleteAdmin(req.params.id);
+  if (!admin) {
+    return res.status(404).json({ success: false, error: 'Admin not found' });
   }
-};
+  res.status(200).json({ success: true, data: {} });
+});
 
-// Update an administrator (PUT - replace)
-exports.updateAdmin = async (req, res) => {
-  try {
-     const { /* Extract all expected fields for PUT */ } = req.body;
-     // Add validation to ensure all required fields are present for PUT
+// Search admins
+exports.searchAdmins = asyncHandler(async (req, res, next) => {
+  // Define searchable fields for admins
+  const { firstName, lastName, email, portfolio, ...paginationQuery } = req.query;
+  const paginationParams = getPaginationParams(paginationQuery, 'lastName', 'asc');
 
-    const admin = await Admin.findByIdAndUpdate(
-      req.params.id,
-      req.body, // Requires full object for replacement
-      { new: true, runValidators: true, overwrite: true }
-    );
+  // Build search criteria
+  let queryCriteria = {};
+  if (firstName) queryCriteria.firstName = { $regex: firstName, $options: 'i' };
+  if (lastName) queryCriteria.lastName = { $regex: lastName, $options: 'i' };
+  if (email) queryCriteria.email = { $regex: email, $options: 'i' };
+  if (portfolio) queryCriteria.portfolio = { $regex: portfolio, $options: 'i' };
 
-    if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
-    }
-    res.status(200).json({ success: true, data: admin });
-  } catch (error) {
-    console.error('Error updating admin (PUT):', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
-    } else {
-        res.status(500).json({ success: false, error: 'Server error updating administrator' });
-    }
-  }
-};
+  const { admins, totalMatchingAdmins } = await adminService.searchAdmins(queryCriteria, paginationParams);
 
-// Delete an administrator
-exports.deleteAdmin = async (req, res) => {
-  try {
-    // Need to await the findByIdAndDelete
-    const admin = await Admin.findByIdAndDelete(req.params.id);
-    if (!admin) {
-        // Use 404 for not found, not 500
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
-    }
-    // Use 200 OK or 204 No Content for successful deletion
-    res.status(200).json({ success: true, message: 'Administrator deleted successfully', data: {} });
-  } catch (error) {
-    console.error('Error deleting admin:', error);
-     if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error deleting administrator' });
-  }
-};
-
-// Search administrators
-exports.searchAdmins = async (req, res) => {
-  try {
-    const { email, lastName, firstName, page = 1, limit = 10, sort = 'lastName', order = 'asc' } = req.query;
-    let query = {};
-
-    if (email) query.email = { $regex: email, $options: 'i' };
-    if (lastName) query.lastName = { $regex: lastName, $options: 'i' };
-    if (firstName) query.firstName = { $regex: firstName, $options: 'i' };
-
-    // Pagination, Sorting, Limiting
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
-    const skip = (pageNum - 1) * limitNum;
-
-    // Validate limit
-    const maxLimit = 100;
-    const effectiveLimit = Math.min(limitNum, maxLimit);
-
-    // Build sort options
-    const sortOptions = {};
-    sortOptions[sort] = order === 'desc' ? -1 : 1;
-
-    // Get total count matching the search query
-    const totalMatchingAdmins = await Admin.countDocuments(query);
-
-    // Execute query with filtering, pagination, sorting, limiting
-    const admins = await Admin.find(query)
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(effectiveLimit);
-
-    res.status(200).json({
-        success: true,
-        total: totalMatchingAdmins,
-        page: pageNum,
-        limit: effectiveLimit,
-        totalPages: Math.ceil(totalMatchingAdmins / effectiveLimit),
-        count: admins.length, // Count on the current page
-        data: admins
-    });
-  } catch (error) {
-    console.error('Error searching admins:', error);
-    res.status(500).json({ success: false, error: 'Server error searching administrators' });
-  }
-};
+  res.status(200).json({
+    success: true,
+    total: totalMatchingAdmins,
+    page: paginationParams.page,
+    limit: paginationParams.limit,
+    totalPages: Math.ceil(totalMatchingAdmins / paginationParams.limit),
+    count: admins.length,
+    data: admins
+  });
+});
 
 // HEAD request for all admins
-exports.headAdmins = async (req, res) => {
-  try {
-    const count = await Admin.countDocuments();
-    res.set('X-Total-Count', count.toString());
-    res.set('X-Resource-Type', 'Administrators');
-    res.status(200).end();
-  } catch (error) {
-    console.error('Error handling HEAD for admins:', error);
-    res.status(500).end();
-  }
-};
+exports.headAdmins = asyncHandler(async (req, res, next) => {
+  const count = await adminService.getAdminsCount();
+  res.set('X-Total-Count', count.toString());
+  res.set('X-Resource-Type', 'Admins');
+  res.status(200).end();
+});
 
-// OPTIONS request for admin collection
+// OPTIONS request for admins collection
 exports.getAdminOptions = (req, res) => {
-  res.set('Allow', 'GET, POST, HEAD, OPTIONS');
+  res.set('Allow', 'GET, POST, HEAD, OPTIONS, PATCH');
   res.status(200).end();
 };
 
 // HEAD request for single admin
-exports.headAdminById = async (req, res) => {
-  try {
-    const admin = await Admin.findById(req.params.id).select('updatedAt createdAt');
-    if (!admin) {
-      return res.status(404).end();
-    }
-    res.set('X-Resource-Type', 'Administrator');
-    const lastModified = admin.updatedAt || admin.createdAt;
-    if (lastModified) {
-        res.set('Last-Modified', lastModified.toUTCString());
-    }
-    res.status(200).end();
-  } catch (error) {
-    console.error('Error handling HEAD for single admin:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).end();
-    }
-    res.status(500).end();
+exports.headAdmin = asyncHandler(async (req, res, next) => {
+  const adminMeta = await adminService.getAdminMetadata(req.params.id);
+  if (!adminMeta) {
+    return res.status(404).end();
   }
-};
+  res.set('X-Resource-Type', 'Admin');
+  const lastModified = adminMeta.updatedAt || adminMeta.dateEmployed;
+  if(lastModified) {
+      res.set('Last-Modified', new Date(lastModified).toUTCString());
+  }
+  res.status(200).end();
+});
 
 // OPTIONS request for single admin
 exports.getAdminIdOptions = (req, res) => {
@@ -257,37 +114,11 @@ exports.getAdminIdOptions = (req, res) => {
   res.status(200).end();
 };
 
-// PATCH an administrator - partial update
-exports.patchAdmin = async (req, res) => {
-  try {
-    // Logic from original routes file, adapted
-    const admin = await Admin.findById(req.params.id);
-    if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
-    }
-
-    // Apply updates from req.body
-    Object.keys(req.body).forEach(key => {
-      // Prevent updating _id or potentially password directly via PATCH without hashing
-      if (key !== '_id' /* && key !== 'password' */ ) {
-          admin[key] = req.body[key];
-      }
-    });
-
-    // If password is in body, handle hashing separately if needed
-    // if (req.body.password) { ... hash and set admin.password ... }
-
-    const updatedAdmin = await admin.save(); // Use save() to trigger Mongoose middleware/validation
-
-    res.status(200).json({ success: true, data: updatedAdmin });
-  } catch (error) {
-    console.error('Error patching admin:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
-    } else {
-        res.status(500).json({ success: false, error: 'Server error patching administrator' });
-    }
+// PATCH an admin (partial update)
+exports.patchAdmin = asyncHandler(async (req, res, next) => {
+  const admin = await adminService.patchAdmin(req.params.id, req.body);
+  if (!admin) {
+    return res.status(404).json({ success: false, error: 'Admin not found' });
   }
-};
+  res.status(200).json({ success: true, data: admin });
+});

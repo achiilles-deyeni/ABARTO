@@ -22,8 +22,10 @@ const chemicalRoute = require("./routes/api/chemical");
 const authRoute = require("./routes/api/auth"); // Import the new auth route
 // const authRouter = require("./routers/auth"); // Uncomment if needed
 
-// Import Error Handler Middleware
+// Import Middleware
 const errorHandler = require('./middleware/errorHandler');
+const logger = require('./middleware/logger'); // Import logger
+const apiLimiter = require('./middleware/rateLimiter'); // Import rate limiter
 
 // Enable CORS
 // IMPORTANT: For development, allow specific origin. For production, configure allowed origins more strictly.
@@ -37,6 +39,10 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply core middleware BEFORE routes
+app.use(logger); // Log requests
+app.use(apiLimiter); // Apply rate limiting to all API requests
 
 // using the routes
 app.use("/api/admins", adminRoute);

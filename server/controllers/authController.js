@@ -1,6 +1,8 @@
 const Admin = require('../models/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const securityService = require('../services/securityService');
+const asyncHandler = require('../utils/asyncHandler');
 
 // Register a new Admin
 exports.registerAdmin = async (req, res) => {
@@ -107,4 +109,49 @@ exports.loginAdmin = async (req, res) => {
         console.error('Admin login error:', error);
         res.status(500).json({ success: false, error: 'Server error during admin login.' });
     }
-}; 
+};
+
+/**
+ * @desc    Authenticate user (Admin) & get token
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
+exports.loginUser = asyncHandler(async (req, res, next) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ success: false, error: 'Please provide email and password' });
+    }
+
+    // Authenticate user using the security service
+    const user = await securityService.authenticateUser(email, password);
+
+    if (!user) {
+        return res.status(401).json({ success: false, error: 'Invalid credentials' }); // Use 401 Unauthorized
+    }
+
+    // User authenticated, generate token
+    try {
+        const token = securityService.generateToken(user);
+
+        // Send token back to client (e.g., in JSON body)
+        // Consider sending in a HttpOnly cookie for better security in web apps
+        res.status(200).json({
+            success: true,
+            token: token,
+            user: { // Send back non-sensitive user info
+                id: user._id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                // Include role if available
+            }
+        });
+    } catch (error) {
+        // Handle potential errors during token generation (e.g., missing JWT_SECRET)
+        console.error("Token generation error:", error);
+        return res.status(500).json({ success: false, error: 'Error generating authentication token' });
+    }
+});
+
+// Add other auth-related controller functions if needed (e.g., register, get current user) 

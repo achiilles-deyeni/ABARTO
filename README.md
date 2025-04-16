@@ -152,3 +152,5 @@ Direct MongoDB queries for employee data management are available in the project
 - Express.js for API routing
 - MongoDB for data storage
 - Postman for API testing
+
+npm run sync-indexes for indexing 

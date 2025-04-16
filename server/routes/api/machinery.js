@@ -3,24 +3,24 @@ const router = express.Router();
 const machineryController = require('../../controllers/machineryController');
 const { protect } = require('../../middleware/authMiddleware');
 
-// GET all machinery, POST new machinery, HEAD, OPTIONS
+// Base route: /api/machinery
 router.route('/')
-    .get(protect, machineryController.getAllMachinery)
-    .post(protect, machineryController.createMachinery)
-    .head(protect, machineryController.headMachinery)
-    .options(machineryController.getMachineryOptions);
+    .get(machineryController.getAllMachineryParts)
+    .post(machineryController.createMachineryPart)
+    .head(machineryController.headMachineryParts)
+    .options(machineryController.getMachineryPartOptions);
 
-// Search machinery - MUST come BEFORE the /:id route
+// Search route: /api/machinery/search
 router.route('/search')
-    .get(protect, machineryController.searchMachinery);
+    .get(machineryController.searchMachineryParts);
 
-// GET, PUT, DELETE, PATCH, HEAD, OPTIONS machinery by ID
+// Single part route: /api/machinery/:id
 router.route('/:id')
-    .get(protect, machineryController.getMachineryById)
-    .put(protect, machineryController.updateMachinery)      // Full update
-    .delete(protect, machineryController.deleteMachinery)
-    .patch(protect, machineryController.patchMachinery)     // Partial update
-    .head(protect, machineryController.headMachineryById)   // Changed from headMachinery
-    .options(machineryController.getMachineryIdOptions);
+    .get(machineryController.getMachineryPartById)
+    .put(machineryController.updateMachineryPart)
+    .patch(machineryController.patchMachineryPart)
+    .delete(machineryController.deleteMachineryPart)
+    .head(machineryController.headMachineryPart)
+    .options(machineryController.getMachineryPartIdOptions);
 
 module.exports = router;
