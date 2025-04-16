@@ -5,22 +5,22 @@ const { protect } = require('../../middleware/authMiddleware');
 
 // Base route: /api/chemicals
 router.route('/')
-    .get(protect, chemicalController.getAllChemicalCompounds)
-    .post(protect, chemicalController.createChemicalCompound)
-    .head(protect, chemicalController.headChemicalCompounds)
-    .options(chemicalController.getChemicalCompoundOptions);
+    .get(protect, chemicalController.getAllChemicals)
+    .post(protect, chemicalController.createChemical)
+    .head(protect, chemicalController.headChemicals)
+    .options(chemicalController.getChemicalOptions);
 
 // Search route: /api/chemicals/search
 router.route('/search')
-    .get(protect, chemicalController.searchChemicalCompounds);
+    .get(protect, chemicalController.searchChemicals);
 
 // Single chemical route: /api/chemicals/:id
 router.route('/:id')
-    .get(protect, chemicalController.getChemicalCompoundById)
-    .put(protect, chemicalController.updateChemicalCompound)
-    .patch(protect, chemicalController.patchChemicalCompound)
-    .delete(protect, chemicalController.deleteChemicalCompound)
-    .head(protect, chemicalController.headChemicalCompound)
-    .options(chemicalController.getChemicalCompoundIdOptions);
+    .get(protect, chemicalController.getChemicalById)
+    .put(protect, chemicalController.updateChemical)
+    .patch(protect, chemicalController.patchChemical)
+    .delete(protect, chemicalController.deleteChemical)
+    .head(protect, chemicalController.headChemical)
+    .options(chemicalController.getChemicalIdOptions);
 
 module.exports = router;
