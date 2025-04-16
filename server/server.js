@@ -1,3 +1,6 @@
+// Specify the path to the .env file relative to the root directory
+require('dotenv').config({ path: './server/.env' });
+
 // Importing the needed modules
 const express = require("express");
 const cookieParser = require("cookie-parser");
