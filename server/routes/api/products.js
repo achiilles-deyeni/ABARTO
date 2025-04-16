@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../../controllers/productController");
+const products = require("../../models/products");
 
 // Route to add products
 router.post("/add-product", async (req, res) => {

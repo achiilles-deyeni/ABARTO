@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Achilles\\Desktop\\Group-project\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\config\\db.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\config\\db.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\server.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\server.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\models\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\models\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\routes\\api\\admin.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\controllers\\adminController.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\controllers\\adminController.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\chemical.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:server\\routes\\api\\chemical.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +34,88 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "server.js",
-              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\server.js",
-              "RelativeDocumentMoniker": "server\\server.js",
-              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\server.js*",
-              "RelativeToolTip": "server\\server.js*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAbAAAAAAAAAA==",
+              "Title": "db.js",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\config\\db.js",
+              "RelativeDocumentMoniker": "server\\config\\db.js",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\config\\db.js",
+              "RelativeToolTip": "server\\config\\db.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-04-02T11:43:43.687Z",
+              "WhenOpened": "2025-04-15T16:56:26.411Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "admin.js",
-              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\models\\admin.js",
-              "RelativeDocumentMoniker": "server\\models\\admin.js",
-              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\models\\admin.js",
-              "RelativeToolTip": "server\\models\\admin.js",
+              "Title": ".env",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\.env",
+              "RelativeDocumentMoniker": "server\\.env",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\.env",
+              "RelativeToolTip": "server\\.env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-04-15T16:56:03.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "admin.js",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\admin.js",
+              "RelativeDocumentMoniker": "server\\routes\\api\\admin.js",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\admin.js",
+              "RelativeToolTip": "server\\routes\\api\\admin.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-04-02T11:41:26.081Z",
+              "WhenOpened": "2025-04-15T16:38:46.068Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "chemical.js",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\chemical.js",
+              "RelativeDocumentMoniker": "server\\routes\\api\\chemical.js",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\routes\\api\\chemical.js",
+              "RelativeToolTip": "server\\routes\\api\\chemical.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-04-15T16:38:36.137Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "adminController.js",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\controllers\\adminController.js",
+              "RelativeDocumentMoniker": "server\\controllers\\adminController.js",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\controllers\\adminController.js",
+              "RelativeToolTip": "server\\controllers\\adminController.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-04-15T16:37:57.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "server.js",
+              "DocumentMoniker": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\server.js",
+              "RelativeDocumentMoniker": "server\\server.js",
+              "ToolTip": "C:\\Users\\Achilles\\Desktop\\Group-project\\server\\server.js",
+              "RelativeToolTip": "server\\server.js",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-04-02T11:43:43.687Z",
               "EditorCaption": ""
             }
           ]
