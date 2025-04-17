@@ -1,17 +1,71 @@
-const Admin = require('../models/admin');
+const Admin = require("../models/admin");
 
-// Get all administrators
+// Get all administrators with pagination, sorting and filtering
 exports.getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find();
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+      ...filterParams
+    } = req.query;
+
+    // Build query from filter parameters
+    const query = {};
+    for (const [key, value] of Object.entries(filterParams)) {
+      // Handle numeric ranges with comma-separated values (min,max)
+      if (
+        value.includes(",") &&
+        !isNaN(value.split(",")[0]) &&
+        !isNaN(value.split(",")[1])
+      ) {
+        const [min, max] = value.split(",").map(Number);
+        query[key] = { $gte: min, $lte: max };
+      }
+      // Handle text search with regex
+      else if (typeof value === "string") {
+        query[key] = { $regex: value, $options: "i" };
+      }
+      // Handle other cases
+      else {
+        query[key] = value;
+      }
+    }
+
+    // Calculate skip value for pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Sort direction
+    const sort = {};
+    sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+
+    // Execute query with pagination and sorting
+    const admins = await Admin.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .exec();
+
+    // Get total count for pagination metadata
+    const total = await Admin.countDocuments(query);
+
     res.status(200).json({
       success: true,
       count: admins.length,
-      data: admins
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / parseInt(limit)),
+      },
+      data: admins,
     });
   } catch (error) {
-    console.error('Error fetching admins:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching administrators' });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
 
@@ -19,20 +73,27 @@ exports.getAllAdmins = async (req, res) => {
 exports.getAdminById = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
+
     if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
+      return res.status(404).json({
+        success: false,
+        error: "Administrator not found",
+      });
     }
-    res.status(200).json({ success: true, data: admin });
+
+    res.status(200).json({
+      success: true,
+      data: admin,
+    });
   } catch (error) {
-    console.error('Error fetching admin by ID:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error fetching administrator' });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
 
-// Create a new administrator (Register)
+// Create a new administrator
 exports.createAdmin = async (req, res) => {
   try {
     const {
@@ -44,23 +105,19 @@ exports.createAdmin = async (req, res) => {
       salary,
       portfolio,
       dateEmployed,
-      // Add password handling if required for admins
+      // Add password field if required
     } = req.body;
 
-    // Basic validation
-    if (!firstName || !lastName || !email) {
-      return res.status(400).json({ success: false, message: 'Missing required fields: firstName, lastName, email' });
-    }
-
+    // Check if admin already exists (using email as unique identifier)
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
-      return res.status(409).json({ success: false, message: 'Administrator with this email already exists' });
+      return res.status(409).json({
+        success: false,
+        message: "Administrator with this email already exists",
+      });
     }
 
-    // Add password hashing here if implementing authentication
-    // const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const newAdmin = new Admin({
+    const admin = await Admin.create({
       firstName,
       lastName,
       DOB,
@@ -69,49 +126,84 @@ exports.createAdmin = async (req, res) => {
       salary,
       portfolio,
       dateEmployed,
-      // password: hashedPassword,
+      // password: hashedPassword, // If implementing authentication
     });
 
-    const savedAdmin = await newAdmin.save();
-    // Avoid sending back sensitive info like password hash
-    const resultAdmin = savedAdmin.toObject();
-    // delete resultAdmin.password;
-
-    res.status(201).json({ success: true, data: resultAdmin });
+    res.status(201).json({
+      success: true,
+      data: admin,
+    });
   } catch (error) {
-    console.error('Error creating admin:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
+    // Differentiate between validation errors and server errors
+    if (error.name === "ValidationError") {
+      res.status(400).json({ success: false, error: error.message });
     } else {
-        res.status(500).json({ success: false, error: 'Server error creating administrator' });
+      res.status(500).json({
+        success: false,
+        error: "Server error during administrator creation",
+      });
     }
+  }
+};
+
+// Bulk create administrators
+exports.bulkCreateAdmins = async (req, res) => {
+  try {
+    // Validate that the body is an array
+    if (!Array.isArray(req.body)) {
+      return res.status(400).json({
+        success: false,
+        error: "Request body should be an array of administrators",
+      });
+    }
+
+    // Use insertMany for bulk operation
+    const admins = await Admin.insertMany(req.body, {
+      ordered: false, // Continues inserting documents even if one fails
+      rawResult: true, // Returns additional info about the operation
+    });
+
+    res.status(201).json({
+      success: true,
+      inserted: admins.insertedCount,
+      data: admins.ops, // The inserted documents
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
 
 // Update an administrator (PUT - replace)
 exports.updateAdmin = async (req, res) => {
   try {
-     const { /* Extract all expected fields for PUT */ } = req.body;
-     // Add validation to ensure all required fields are present for PUT
-
-    const admin = await Admin.findByIdAndUpdate(
-      req.params.id,
-      req.body, // Requires full object for replacement
-      { new: true, runValidators: true, overwrite: true }
-    );
+    const admin = await Admin.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // Return the modified document
+      runValidators: true, // Run model validation
+      overwrite: true, // Ensures it's a PUT (replace) operation
+    });
 
     if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
+      return res.status(404).json({
+        success: false,
+        error: "Administrator not found",
+      });
     }
-    res.status(200).json({ success: true, data: admin });
+
+    res.status(200).json({
+      success: true,
+      data: admin,
+    });
   } catch (error) {
-    console.error('Error updating admin (PUT):', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
+    if (error.name === "ValidationError") {
+      res.status(400).json({ success: false, error: error.message });
     } else {
-        res.status(500).json({ success: false, error: 'Server error updating administrator' });
+      res.status(500).json({
+        success: false,
+        error: "Server error during administrator update",
+      });
     }
   }
 };
@@ -119,119 +211,255 @@ exports.updateAdmin = async (req, res) => {
 // Delete an administrator
 exports.deleteAdmin = async (req, res) => {
   try {
-    // Need to await the findByIdAndDelete
     const admin = await Admin.findByIdAndDelete(req.params.id);
+
     if (!admin) {
-        // Use 404 for not found, not 500
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
+      return res.status(404).json({
+        success: false,
+        error: "Administrator not found",
+      });
     }
-    // Use 200 OK or 204 No Content for successful deletion
-    res.status(200).json({ success: true, message: 'Administrator deleted successfully', data: {} });
+
+    res.status(200).json({
+      success: true,
+      message: "Administrator deleted successfully",
+      data: {}, // Optionally return the deleted object or empty object
+    });
   } catch (error) {
-    console.error('Error deleting admin:', error);
-     if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error deleting administrator' });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
 
-// Search administrators
+// Bulk delete administrators
+exports.bulkDeleteAdmins = async (req, res) => {
+  try {
+    // Check if we have an array of IDs
+    if (!Array.isArray(req.body.ids)) {
+      return res.status(400).json({
+        success: false,
+        error: "Request body should contain an array of IDs to delete",
+      });
+    }
+
+    const result = await Admin.deleteMany({ _id: { $in: req.body.ids } });
+
+    res.status(200).json({
+      success: true,
+      deleted: result.deletedCount,
+      message: `${result.deletedCount} administrators deleted successfully`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+// Advanced search administrators with complex queries
 exports.searchAdmins = async (req, res) => {
   try {
-    const { email, lastName, firstName } = req.query;
-    let query = {};
+    const {
+      firstName,
+      lastName,
+      email,
+      minSalary,
+      maxSalary,
+      query = {},
+    } = req.query;
 
-    if (email) query.email = { $regex: email, $options: 'i' };
-    if (lastName) query.lastName = { $regex: lastName, $options: 'i' };
-    if (firstName) query.firstName = { $regex: firstName, $options: 'i' };
+    // Build the query object for MongoDB
+    if (firstName) query.firstName = { $regex: firstName, $options: "i" };
+    if (lastName) query.lastName = { $regex: lastName, $options: "i" };
+    if (email) query.email = { $regex: email, $options: "i" };
 
-    const admins = await Admin.find(query);
-    res.status(200).json({ success: true, count: admins.length, data: admins });
+    // Add salary range query if provided
+    if (minSalary || maxSalary) {
+      query.salary = {};
+      if (minSalary) query.salary.$gte = parseFloat(minSalary);
+      if (maxSalary) query.salary.$lte = parseFloat(maxSalary);
+    }
+
+    // Handle pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Handle sorting
+    const sortField = req.query.sortBy || "createdAt";
+    const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;
+    const sort = {};
+    sort[sortField] = sortOrder;
+
+    // Execute query with cursor for efficient large result handling
+    const cursor = Admin.find(query).sort(sort).cursor();
+
+    const admins = [];
+    let count = 0;
+
+    // Skip documents for pagination
+    for (let i = 0; i < skip; i++) {
+      const hasNext = await cursor.next();
+      if (!hasNext) break;
+    }
+
+    // Fetch limited number of documents
+    for (let i = 0; i < limit; i++) {
+      const admin = await cursor.next();
+      if (!admin) break;
+      admins.push(admin);
+      count++;
+    }
+
+    // Get total count for pagination
+    const total = await Admin.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      count,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+      },
+      data: admins,
+    });
   } catch (error) {
-    console.error('Error searching admins:', error);
-    res.status(500).json({ success: false, error: 'Server error searching administrators' });
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
   }
 };
 
-// HEAD request for all admins
+// Aggregation endpoints
+
+// Get administrator statistics
+exports.getAdminStats = async (req, res) => {
+  try {
+    const stats = await Admin.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalAdmins: { $sum: 1 },
+          avgSalary: { $avg: "$salary" },
+          minSalary: { $min: "$salary" },
+          maxSalary: { $max: "$salary" },
+          totalSalary: { $sum: "$salary" },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: stats[0] || {},
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+// HEAD request for all administrators
 exports.headAdmins = async (req, res) => {
   try {
     const count = await Admin.countDocuments();
-    res.set('X-Total-Count', count.toString());
-    res.set('X-Resource-Type', 'Administrators');
+    res.set("X-Total-Count", count.toString());
+    res.set("X-Resource-Type", "Administrators");
+    // Add cache control headers
+    res.set("Cache-Control", "max-age=60"); // Cache for 60 seconds
     res.status(200).end();
   } catch (error) {
-    console.error('Error handling HEAD for admins:', error);
-    res.status(500).end();
+    res.status(500).end(); // HEAD should not return a body on error
   }
 };
 
-// OPTIONS request for admin collection
+// OPTIONS request for administrators collection
 exports.getAdminOptions = (req, res) => {
-  res.set('Allow', 'GET, POST, HEAD, OPTIONS');
+  res.set("Allow", "GET, POST, HEAD, OPTIONS");
   res.status(200).end();
 };
 
-// HEAD request for single admin
-exports.headAdminById = async (req, res) => {
+// HEAD request for single administrator
+exports.headAdmin = async (req, res) => {
   try {
-    const admin = await Admin.findById(req.params.id).select('updatedAt createdAt');
+    const admin = await Admin.findById(req.params.id).select(
+      "updatedAt createdAt"
+    );
+
     if (!admin) {
       return res.status(404).end();
     }
-    res.set('X-Resource-Type', 'Administrator');
-    const lastModified = admin.updatedAt || admin.createdAt;
-    if (lastModified) {
-        res.set('Last-Modified', lastModified.toUTCString());
+
+    res.set("X-Resource-Type", "Administrator");
+    if (admin.updatedAt) {
+      res.set("Last-Modified", admin.updatedAt.toUTCString());
+    } else if (admin.createdAt) {
+      res.set("Last-Modified", admin.createdAt.toUTCString());
     }
+
+    // Add ETag based on updatedAt or version field
+    const etag = `"${admin._id.toString()}-${new Date(
+      admin.updatedAt || admin.createdAt
+    ).getTime()}"`;
+    res.set("ETag", etag);
+
     res.status(200).end();
   } catch (error) {
-    console.error('Error handling HEAD for single admin:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).end();
+    if (error.name === "CastError") {
+      return res.status(400).end(); // Invalid ID format
     }
     res.status(500).end();
   }
 };
 
-// OPTIONS request for single admin
+// OPTIONS request for single administrator
 exports.getAdminIdOptions = (req, res) => {
-  res.set('Allow', 'GET, PUT, DELETE, PATCH, HEAD, OPTIONS');
+  res.set("Allow", "GET, PUT, DELETE, PATCH, HEAD, OPTIONS");
   res.status(200).end();
 };
 
 // PATCH an administrator - partial update
 exports.patchAdmin = async (req, res) => {
   try {
-    // Logic from original routes file, adapted
-    const admin = await Admin.findById(req.params.id);
+    // Prevent overwriting the entire document with patch
+    if (req.body._id) delete req.body._id; // Cannot update _id
+
+    const admin = await Admin.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body }, // Use $set to apply partial updates
+      {
+        new: true, // Return the modified document
+        runValidators: true, // Run model validation on updated fields
+        context: "query", // Important for some validators
+      }
+    );
+
     if (!admin) {
-      return res.status(404).json({ success: false, error: 'Administrator not found' });
+      return res.status(404).json({
+        success: false,
+        error: "Administrator not found",
+      });
     }
 
-    // Apply updates from req.body
-    Object.keys(req.body).forEach(key => {
-      // Prevent updating _id or potentially password directly via PATCH without hashing
-      if (key !== '_id' /* && key !== 'password' */ ) {
-          admin[key] = req.body[key];
-      }
+    res.status(200).json({
+      success: true,
+      data: admin,
     });
-
-    // If password is in body, handle hashing separately if needed
-    // if (req.body.password) { ... hash and set admin.password ... }
-
-    const updatedAdmin = await admin.save(); // Use save() to trigger Mongoose middleware/validation
-
-    res.status(200).json({ success: true, data: updatedAdmin });
   } catch (error) {
-    console.error('Error patching admin:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
+    if (error.name === "ValidationError") {
+      res.status(400).json({ success: false, error: error.message });
     } else {
-        res.status(500).json({ success: false, error: 'Server error patching administrator' });
+      res.status(500).json({
+        success: false,
+        error: "Server error during administrator patch",
+      });
     }
   }
 };

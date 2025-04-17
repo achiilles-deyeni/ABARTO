@@ -1,25 +1,39 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require('../../controllers/adminController'); // NOTE: Controller needs to be created
+const adminController = require("../../controllers/adminController");
 
-// GET all chemicals, POST new chemical, HEAD, OPTIONS
-router.route('/')
-    .get(adminController.getAllAdmins)    // Placeholder
-    .post(adminController.createAdmin)   // Placeholder
-    .head(adminController.headAdmins)    // Placeholder
-    .options(adminController.getAdminOptions); // Placeholder
+// OPTIONS for collection
+router.options("/", adminController.getAdminOptions);
 
-// Search admins - MUST come BEFORE the /:id route
-router.route('/search')
-    .get(adminController.searchAdmins);   // Placeholder
+// HEAD for collection
+router.head("/", adminController.headAdmins);
 
-// GET, PUT, DELETE, PATCH, HEAD, OPTIONS admin by ID
-router.route('/:id')
-    .get(adminController.getAdminById)   // Placeholder
-    .put(adminController.updateAdmin)   // Placeholder
-    .delete(adminController.deleteAdmin) // Placeholder
-    .patch(adminController.patchAdmin)   // Placeholder
-    .head(adminController.headAdminById)     // Placeholder
-    .options(adminController.getAdminIdOptions); // Placeholder
+// GET all admins with filtering, pagination, sorting
+router.get("/", adminController.getAllAdmins);
+
+// POST - Create new admin
+router.post("/", adminController.createAdmin);
+
+// Bulk operations
+router.post("/bulk", adminController.bulkCreateAdmins);
+router.delete("/bulk", adminController.bulkDeleteAdmins);
+
+// Advanced search
+router.get("/search", adminController.searchAdmins);
+
+// Analytics and aggregation endpoints
+router.get("/stats", adminController.getAdminStats);
+
+// OPTIONS for single item
+router.options("/:id", adminController.getAdminIdOptions);
+
+// HEAD for single item
+router.head("/:id", adminController.headAdmin);
+
+// Single admin routes
+router.get("/:id", adminController.getAdminById);
+router.put("/:id", adminController.updateAdmin);
+router.patch("/:id", adminController.patchAdmin);
+router.delete("/:id", adminController.deleteAdmin);
 
 module.exports = router;

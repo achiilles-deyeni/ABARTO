@@ -1,147 +1,42 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../../controllers/productController");
-const products = require("../../models/products");
 
-// Route to add products
-router.post("/add-product", async (req, res) => {
-  try {
-    const { name, price, description, category, quantity, rating } = req.body;
+// OPTIONS for collection
+router.options("/", productController.getProductOptions);
 
-    // Input validation
-    if (!name || !price) {
-      return res.status(400).json({
-        success: false,
-        message: "Name and price are required!",
-      });
-    }
+// HEAD for collection
+router.head("/", productController.headProducts);
 
-    const product = await products.findOne({ name });
-    if (product) {
-      return res.status(409).json({
-        success: false,
-        message: "Product already exists!",
-      });
-    }
+// GET all products with filtering, pagination, sorting
+router.get("/", productController.getAllProducts);
 
-    const newProduct = new products({
-      name,
-      price,
-      description,
-      category,
-      quantity,
-      rating,
-    });
+// POST - Create new product
+router.post("/", productController.createProduct);
 
-    const result = await newProduct.save();
-    return res.status(201).json({
-      success: true,
-      message: "Product added successfully!",
-      result,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
+// Bulk operations
+router.post("/bulk", productController.bulkCreateProducts);
+router.delete("/bulk", productController.bulkDeleteProducts);
 
-// Route to update a product
-router.patch("/:id", async (req, res) => {
-  try {
-    const { name, price, description, category, quantity, rating } = req.body;
+// Advanced search
+router.get("/search", productController.searchProducts);
 
-    // Using findByIdAndUpdate for atomic updates
-    const updatedProduct = await products.findByIdAndUpdate(
-      req.params.id,
-      { name, price, description, category, quantity, rating },
-      { new: true, runValidators: true }
-    );
+// Analytics and aggregation endpoints
+router.get("/stats", productController.getProductStats);
+router.get("/categories", productController.getProductsByCategory);
+router.get("/top-rated", productController.getTopRatedProducts);
+router.get("/low-stock", productController.getLowStockProducts);
 
-    if (!updatedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found!",
-      });
-    }
+// OPTIONS for single item
+router.options("/:id", productController.getProductIdOptions);
 
-    return res.status(200).json({
-      success: true,
-      message: "Product updated successfully!",
-      product: updatedProduct,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
+// HEAD for single item
+router.head("/:id", productController.headProduct);
 
-// Route to delete a product
-router.delete("/:id", async (req, res) => {
-  try {
-    const deletedProduct = await products.findByIdAndDelete(req.params.id);
+// Single product routes
+router.get("/:id", productController.getProductById);
+router.put("/:id", productController.updateProduct);
+router.patch("/:id", productController.patchProduct);
+router.delete("/:id", productController.deleteProduct);
 
-    if (!deletedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found!",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Product deleted successfully",
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
-
-// Route to get a specific product
-router.get("/:id", async (req, res) => {
-  try {
-    const product = await products.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found!",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      product,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
-
-// Route to view all products
-router.get("/", async (req, res) => {
-  try {
-    const productList = await products.find();
-
-    return res.status(200).json({
-      success: true,
-      count: productList.length,
-      products: productList,
-    });
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
 module.exports = router;
