@@ -1,25 +1,39 @@
 const express = require("express");
 const router = express.Router();
-const chemicalController = require('../../controllers/chemicalController'); // NOTE: Controller needs to be created
+const chemicalController = require("../../controllers/chemicalController");
 
-// GET all chemicals, POST new chemical, HEAD, OPTIONS
-router.route('/')
-    .get(chemicalController.getAllChemicals)    // Placeholder
-    .post(chemicalController.createChemical)   // Placeholder
-    .head(chemicalController.headChemicals)    // Placeholder
-    .options(chemicalController.getChemicalOptions); // Placeholder
+// OPTIONS for collection
+router.options("/", chemicalController.getChemicalOptions);
 
-// Search chemicals - MUST come BEFORE the /:id route
-router.route('/search')
-    .get(chemicalController.searchChemicals);   // Placeholder
+// Collection routes (no ID)
+router
+  .route("/")
+  .get(chemicalController.getAllChemicals)
+  .post(chemicalController.createChemical)
+  .head(chemicalController.headChemicals);
 
-// GET, PUT, DELETE, PATCH, HEAD, OPTIONS chemical by ID
-router.route('/:id')
-    .get(chemicalController.getChemicalById)   // Placeholder
-    .put(chemicalController.updateChemical)   // Placeholder
-    .delete(chemicalController.deleteChemical) // Placeholder
-    .patch(chemicalController.patchChemical)   // Placeholder
-    .head(chemicalController.headChemical)     // Placeholder
-    .options(chemicalController.getChemicalIdOptions); // Placeholder
+// Bulk operations
+router.post("/bulk", chemicalController.bulkCreateChemicals);
+router.delete("/bulk", chemicalController.bulkDeleteChemicals);
+
+// Advanced search endpoint
+router.get("/search", chemicalController.searchChemicals);
+
+// Aggregation and specialized endpoints
+router.get("/stats", chemicalController.getChemicalStats);
+router.get("/by-hazard", chemicalController.getChemicalsByHazardClass);
+router.get("/expiring", chemicalController.getExpiringChemicals);
+
+// OPTIONS for individual resource
+router.options("/:id", chemicalController.getChemicalIdOptions);
+
+// Individual resource routes (with ID)
+router
+  .route("/:id")
+  .get(chemicalController.getChemicalById)
+  .put(chemicalController.updateChemical)
+  .delete(chemicalController.deleteChemical)
+  .patch(chemicalController.patchChemical)
+  .head(chemicalController.headChemical);
 
 module.exports = router;

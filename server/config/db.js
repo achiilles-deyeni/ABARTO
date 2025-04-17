@@ -4,7 +4,13 @@ const models = require("../models/index");
 
 // Database configuration
 mongoose
-  .connect("mongodb://localhost:27017/groupproject")
+  .connect(
+    "mongodb+srv://achillesmann03:admin@cluster0.miqi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log("Database connection established");
   })

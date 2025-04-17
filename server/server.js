@@ -37,7 +37,7 @@ app.use("/wholesale", wholesaleRoute);
 app.use("/security", securityRoute);
 app.use("/report", reportRoute);
 app.use("/safety", safetyRoute);
-app.use("/chemical", chemicalRoute);
+app.use("/chemicals", chemicalRoute);
 
 // Initialization of the port
 const PORT = process.env.PORT || 3000;

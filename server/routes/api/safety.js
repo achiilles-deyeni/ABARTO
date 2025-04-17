@@ -1,27 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const safetyController = require('../../controllers/safetyController'); // NOTE: Controller needs to be created
+const safetyController = require("../../controllers/safetyController");
 
-// Assuming this relates to safety procedures, incidents, or checks
+// OPTIONS for collection
+router.options("/", safetyController.getSafetyOptions);
 
-// GET all safety items, POST new item, HEAD, OPTIONS
-router.route('/')
-    .get(safetyController.getAllSafetyItems)    // Placeholder
-    .post(safetyController.createSafetyItem)   // Placeholder
-    .head(safetyController.headSafetyItems)    // Placeholder
-    .options(safetyController.getSafetyOptions); // Placeholder
+// Collection routes (no ID)
+router
+  .route("/")
+  .get(safetyController.getAllSafetyItems)
+  .post(safetyController.createSafetyItem)
+  .head(safetyController.headSafetyItems);
 
-// Search safety items - MUST come BEFORE the /:id route
-router.route('/search')
-    .get(safetyController.searchSafetyItems);   // Placeholder
+// Advanced search endpoint
+router.get("/search", safetyController.searchSafetyItems);
 
-// GET, PUT, DELETE, PATCH, HEAD, OPTIONS safety item by ID
-router.route('/:id')
-    .get(safetyController.getSafetyItemById)   // Placeholder
-    .put(safetyController.updateSafetyItem)   // Placeholder
-    .delete(safetyController.deleteSafetyItem) // Placeholder
-    .patch(safetyController.patchSafetyItem)   // Placeholder
-    .head(safetyController.headSafetyItem)     // Placeholder
-    .options(safetyController.getSafetyIdOptions); // Placeholder
+// Maintenance specific endpoints
+router.get(
+  "/due-for-inspection",
+  safetyController.getEquipmentDueForInspection
+);
+router.get("/maintenance-report", safetyController.generateMaintenanceReport);
+
+// Record maintenance for a specific equipment item
+router.post("/:id/maintenance", safetyController.recordMaintenance);
+
+// OPTIONS for individual resource
+router.options("/:id", safetyController.getSafetyIdOptions);
+
+// Individual resource routes (with ID)
+router
+  .route("/:id")
+  .get(safetyController.getSafetyItemById)
+  .put(safetyController.updateSafetyItem)
+  .delete(safetyController.deleteSafetyItem)
+  .patch(safetyController.patchSafetyItem)
+  .head(safetyController.headSafetyItem);
 
 module.exports = router;
