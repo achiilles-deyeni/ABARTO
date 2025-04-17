@@ -20,6 +20,10 @@
   },
   "homepage": "https://github.com/achiilles-deyeni/ABARTO#readme",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.2",
+    "@mui/material": "^7.0.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
@@ -33,6 +37,7 @@
     "mongodb": "^6.15.0",
     "mongoose": "^8.12.1",
     "morgan": "^1.10.0",
-    "node-mailer": "^0.1.1"
+    "node-mailer": "^0.1.1",
+    "react-router-dom": "^7.5.0"
   }
 }

@@ -2,14 +2,18 @@ const mongoose = require("mongoose");
 // importing models
 const models = require("../models/index");
 
+
 // Database configuration
 mongoose
-  .connect("mongodb://localhost:27017/roi", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://achillesmann03:admin@cluster0.miqi8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
-    console.log("Connection established");
+    console.log("Database connection established");
   })
   .catch((err) => console.log("Error connecting:", err));
 const db = mongoose.connection;

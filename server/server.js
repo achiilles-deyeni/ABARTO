@@ -34,6 +34,7 @@ const apiLimiter = require('./middleware/rateLimiter'); // Import rate limiter
 // IMPORTANT: For development, allow specific origin. For production, configure allowed origins more strictly.
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow requests from your React app
+    credentials: true, // Allow sending cookies/auth headers
     optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
