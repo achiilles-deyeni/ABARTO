@@ -3,7 +3,6 @@ const ChemicalCompound = require("../models/chemicalCompound");
 // Get all chemical compounds with pagination, sorting and filtering
 exports.getAllChemicals = async (req, res) => {
   try {
-<<<<<<< HEAD
     const {
       page = 1,
       limit = 10,
@@ -68,37 +67,6 @@ exports.getAllChemicals = async (req, res) => {
       success: false,
       error: error.message,
     });
-=======
-    // Pagination, Sorting, Limiting
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const sort = req.query.sort || 'compoundName'; // Default sort
-    const order = req.query.order || 'asc';
-    const skip = (page - 1) * limit;
-    const maxLimit = 100;
-    const effectiveLimit = Math.min(limit, maxLimit);
-    const sortOptions = {};
-    sortOptions[sort] = order === 'desc' ? -1 : 1;
-
-    const totalChemicals = await ChemicalCompound.countDocuments();
-    const chemicals = await ChemicalCompound.find()
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(effectiveLimit);
-
-    res.status(200).json({
-      success: true,
-      total: totalChemicals,
-      page: page,
-      limit: effectiveLimit,
-      totalPages: Math.ceil(totalChemicals / effectiveLimit),
-      count: chemicals.length,
-      data: chemicals
-    });
-  } catch (error) {
-    console.error('Error fetching chemicals:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching chemicals: ' + error.message });
->>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
   }
 };
 
@@ -309,7 +277,6 @@ exports.bulkDeleteChemicals = async (req, res) => {
 // Advanced search chemical compounds with complex queries
 exports.searchChemicals = async (req, res) => {
   try {
-<<<<<<< HEAD
     const {
       compoundName,
       formula,
@@ -530,41 +497,6 @@ exports.getExpiringChemicals = async (req, res) => {
       success: false,
       error: error.message,
     });
-=======
-    const { compoundName, formula, storageLocation, page = 1, limit = 10, sort = 'compoundName', order = 'asc' } = req.query;
-    let query = {};
-    if (compoundName) query.compoundName = { $regex: compoundName, $options: 'i' };
-    if (formula) query.formula = { $regex: formula, $options: 'i' }; // Case-sensitive might be better for formula
-    if (storageLocation) query.storageLocation = { $regex: storageLocation, $options: 'i' };
-
-    // Pagination, Sorting, Limiting
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
-    const skip = (pageNum - 1) * limitNum;
-    const maxLimit = 100;
-    const effectiveLimit = Math.min(limitNum, maxLimit);
-    const sortOptions = {};
-    sortOptions[sort] = order === 'desc' ? -1 : 1;
-
-    const totalMatchingChemicals = await ChemicalCompound.countDocuments(query);
-    const chemicals = await ChemicalCompound.find(query)
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(effectiveLimit);
-
-    res.status(200).json({
-        success: true,
-        total: totalMatchingChemicals,
-        page: pageNum,
-        limit: effectiveLimit,
-        totalPages: Math.ceil(totalMatchingChemicals / effectiveLimit),
-        count: chemicals.length,
-        data: chemicals
-    });
-  } catch (error) {
-    console.error('Error searching chemicals:', error);
-    res.status(500).json({ success: false, error: 'Server error searching chemicals: ' + error.message });
->>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
   }
 };
 

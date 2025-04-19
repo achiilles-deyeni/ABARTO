@@ -27,10 +27,6 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
-<<<<<<< HEAD
-=======
-    "cors": "^2.8.5",
->>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",

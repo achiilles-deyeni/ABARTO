@@ -8,12 +8,14 @@ const AdminSchema = new Schema(
       required: [true, "First name is required"],
       trim: true,
       maxlength: [50, "First name cannot be more than 50 characters"],
+      index: true,
     },
     lastName: {
       type: String,
       required: [true, "Last name is required"],
       trim: true,
       maxlength: [50, "Last name cannot be more than 50 characters"],
+      index: true,
     },
     email: {
       type: String,
@@ -21,6 +23,7 @@ const AdminSchema = new Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      index: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please add a valid email",
@@ -28,6 +31,8 @@ const AdminSchema = new Schema(
     },
     phoneNumber: {
       type: String,
+      required: true,
+      unique: true,
       trim: true,
       match: [
         /^(\+\d{1,3}[- ]?)?\d{10,14}$/,
@@ -36,6 +41,7 @@ const AdminSchema = new Schema(
     },
     DOB: {
       type: Date,
+      required: true,
       validate: {
         validator: function (value) {
           // Basic validation: must be in the past
@@ -46,15 +52,19 @@ const AdminSchema = new Schema(
     },
     salary: {
       type: Number,
+      required: true,
       min: [0, "Salary cannot be negative"],
     },
     portfolio: {
       type: String,
+      required: true,
       trim: true,
+      index: true,
     },
     dateEmployed: {
       type: Date,
       default: Date.now,
+      index: true,
       validate: {
         validator: function (value) {
           // Basic validation: must be in the past or present
@@ -62,6 +72,12 @@ const AdminSchema = new Schema(
         },
         message: "Employment date cannot be in the future",
       },
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+      select: false, // Don't include password in query results by default
     },
     role: {
       type: String,
@@ -72,15 +88,6 @@ const AdminSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    // If implementing authentication, add password field:
-    /* 
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters'],
-    select: false // Don't include password in query results by default
-  },
-  */
     lastLogin: {
       type: Date,
     },
@@ -96,54 +103,7 @@ const AdminSchema = new Schema(
   }
 );
 
-<<<<<<< HEAD
-// Virtual for full name
-AdminSchema.virtual("fullName").get(function () {
-  return `${this.firstName} ${this.lastName}`;
-});
-
-// Index for faster queries
-AdminSchema.index({ email: 1 });
-AdminSchema.index({ lastName: 1, firstName: 1 });
-
-// If implementing authentication, add pre-save middleware for password hashing:
-/*
-AdminSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Method to compare entered password with hashed password
-AdminSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-*/
-=======
-const AdminSchema = new mongoose.Schema({
-  firstName: { type: String, required: true, index: true },
-  lastName: { type: String, required: true, index: true },
-  DOB: { type: Date, required: true },
-  phoneNumber: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true, index: true },
-  password: { type: String, required: [true, 'Password is required'], select: false },
-  salary: { type: Number, required: true },
-  portfolio: { type: String, required: true, index: true },
-  dateEmployed: { type: Date, default: Date.now, index: true },
-}, {
-  timestamps: true
-});
-
 // Optional: Compound index
 // AdminSchema.index({ lastName: 1, firstName: 1 });
->>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
 
 module.exports = mongoose.model("Admin", AdminSchema);
