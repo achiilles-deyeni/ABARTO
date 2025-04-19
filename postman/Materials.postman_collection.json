@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "d4e5f6a7-b8c9-0123-defa-234567890abc",
+		"name": "Materials",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL MATERIALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET MATERIAL BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials/{{materialId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"{{materialId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A MATERIAL",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"name\": \"Aluminum Sheeting\",\\n  \"description\": \"1mm thick aluminum sheets\",\\n  \"supplier\": \"MetalWorks Ltd.\",\\n  \"quantity\": 250,\\n  \"unit\": \"sheets\",\\n  \"unitCost\": 15.50\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A MATERIAL",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials/{{materialId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"{{materialId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A MATERIAL (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"name\": \"Steel Coil - Grade B\",\\n  \"description\": \"Standard grade steel coil\",\\n  \"supplier\": \"Steel Inc.\",\\n  \"quantity\": 8,\\n  \"unit\": \"tonnes\",\\n  \"unitCost\": 780,\\n  \"lastOrdered\": \"2023-10-05T00:00:00.000Z\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/materials/{{materialId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"{{materialId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A MATERIAL (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"quantity\": 7,\\n  \"unitCost\": 785\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/materials/{{materialId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"{{materialId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR MATERIALS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON MATERIALS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE MATERIAL",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials/{{materialId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"{{materialId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH MATERIALS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/materials/search?supplier=PolyCorp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"materials",
+						"search"
+					],
+					"query": [
+						{
+							"key": "supplier",
+							"value": "PolyCorp"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

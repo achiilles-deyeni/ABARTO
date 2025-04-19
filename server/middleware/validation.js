@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+const { validationResult } = require('express-validator');
 
 // Middleware to handle validation errors from express-validator chains
 const validate = (req, res, next) => {
@@ -9,12 +9,12 @@ const validate = (req, res, next) => {
 
   // Extract validation errors
   const extractedErrors = [];
-  errors.array().map((err) => extractedErrors.push({ [err.path]: err.msg })); // Use err.path instead of err.param
+  errors.array().map(err => extractedErrors.push({ [err.path]: err.msg })); // Use err.path instead of err.param
 
   // Send 422 Unprocessable Entity response with validation errors
   return res.status(422).json({
     success: false,
-    error: "Validation Failed",
+    error: 'Validation Failed',
     validationErrors: extractedErrors,
   });
 };

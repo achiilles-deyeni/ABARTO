@@ -3,16 +3,36 @@ const RawMaterial = require('../models/rawMaterial'); // Corrected path
 // Get all materials
 exports.getAllMaterials = async (req, res) => {
   try {
-    const materials = await RawMaterial.find();
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'name'; // Default sort
+    const order = req.query.order || 'asc';
+    const skip = (page - 1) * limit;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limit, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMaterials = await RawMaterial.countDocuments();
+    const materials = await RawMaterial.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
     res.status(200).json({
       success: true,
+      total: totalMaterials,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalMaterials / effectiveLimit),
       count: materials.length,
       data: materials
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Server error fetching materials: ' + error.message
     });
   }
 };
@@ -141,17 +161,34 @@ exports.deleteMaterial = async (req, res) => {
 // Search materials
 exports.searchMaterials = async (req, res) => {
   try {
-    const { name, supplier, minQuantity } = req.query;
+    const { name, supplier, minQuantity, page = 1, limit = 10, sort = 'name', order = 'asc' } = req.query;
     let query = {};
 
     if (name) query.name = { $regex: name, $options: 'i' };
     if (supplier) query.supplier = { $regex: supplier, $options: 'i' };
     if (minQuantity) query.quantity = { $gte: parseInt(minQuantity) };
 
-    const materials = await RawMaterial.find(query);
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    const totalMatchingMaterials = await RawMaterial.countDocuments(query);
+    const materials = await RawMaterial.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
 
     res.status(200).json({
       success: true,
+      total: totalMatchingMaterials,
+      page: pageNum,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalMatchingMaterials / effectiveLimit),
       count: materials.length,
       data: materials
     });
@@ -159,7 +196,7 @@ exports.searchMaterials = async (req, res) => {
     console.error('Error searching materials:', error);
     res.status(500).json({
       success: false,
-      error: 'Server error during material search'
+      error: 'Server error searching materials: ' + error.message
     });
   }
 };

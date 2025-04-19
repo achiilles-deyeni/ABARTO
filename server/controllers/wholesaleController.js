@@ -1,200 +1,152 @@
-const WholesaleOrder = require('../models/wholesaleOrder'); // Corrected path and assumed model name
+const wholesaleOrderService = require('../services/wholesaleOrderService');
+const { getPaginationParams } = require('../utils/pagination');
+const asyncHandler = require('../utils/asyncHandler');
 
-// Get all wholesale records
-exports.getAllWholesaleRecords = async (req, res) => {
-  try {
-    const records = await WholesaleOrder.find()
-        // .populate('customerId') // Optional: Populate customer details if using refs
-        // .populate('productId'); // Optional: Populate product details if using refs
-    res.status(200).json({ success: true, count: records.length, data: records });
-  } catch (error) {
-    console.error('Error fetching wholesale records:', error);
-    res.status(500).json({ success: false, error: 'Server error fetching wholesale records' });
+// Get all wholesale orders
+exports.getAllWholesaleOrders = asyncHandler(async (req, res, next) => {
+  const paginationParams = getPaginationParams(req.query, 'wholeSalerName', 'asc'); // Default sort
+  const populate = req.query.populate === 'true';
+  const { orders, totalOrders } = await wholesaleOrderService.getAllWholesaleOrders(paginationParams, populate);
+
+  res.status(200).json({
+    success: true,
+    total: totalOrders,
+    page: paginationParams.page,
+    limit: paginationParams.limit,
+    totalPages: Math.ceil(totalOrders / paginationParams.limit),
+    count: orders.length,
+    data: orders
+  });
+});
+
+// Get a single wholesale order by ID
+exports.getWholesaleOrderById = asyncHandler(async (req, res, next) => {
+  const populate = req.query.populate === 'true';
+  const order = await wholesaleOrderService.getWholesaleOrderById(req.params.id, populate);
+  if (!order) {
+    return res.status(404).json({ success: false, error: 'Wholesale order not found' });
   }
-};
+  res.status(200).json({ success: true, data: order });
+});
 
-// Get wholesale record by ID
-exports.getWholesaleRecordById = async (req, res) => {
-  try {
-    const record = await WholesaleOrder.findById(req.params.id);
-        // .populate('customerId')
-        // .populate('productId');
-    if (!record) {
-      return res.status(404).json({ success: false, error: 'Wholesale record not found' });
-    }
-    res.status(200).json({ success: true, data: record });
-  } catch (error) {
-    console.error('Error fetching wholesale record by ID:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error fetching wholesale record' });
+// Create a new wholesale order
+exports.createWholesaleOrder = asyncHandler(async (req, res, next) => {
+  const order = await wholesaleOrderService.createWholesaleOrder(req.body);
+  res.status(201).json({ success: true, data: order });
+});
+
+// Update a wholesale order (PUT)
+exports.updateWholesaleOrder = asyncHandler(async (req, res, next) => {
+  const order = await wholesaleOrderService.updateWholesaleOrder(req.params.id, req.body);
+  if (!order) {
+    return res.status(404).json({ success: false, error: 'Wholesale order not found' });
   }
-};
+  res.status(200).json({ success: true, data: order });
+});
 
-// Create new wholesale record
-exports.createWholesaleRecord = async (req, res) => {
-  try {
-    const { customerId, productId, quantity, totalPrice } = req.body;
-    if (!customerId || !productId || quantity == null || totalPrice == null) {
-      return res.status(400).json({ success: false, message: 'Missing required fields: customerId, productId, quantity, totalPrice' });
-    }
-
-    const newRecord = new WholesaleOrder({
-      customerId,
-      productId,
-      quantity,
-      totalPrice,
-      orderDate: req.body.orderDate || Date.now()
-    });
-    const savedRecord = await newRecord.save();
-    res.status(201).json({ success: true, data: savedRecord });
-  } catch (error) {
-    console.error('Error creating wholesale record:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else {
-        res.status(500).json({ success: false, error: 'Server error creating wholesale record' });
-    }
+// Delete a wholesale order
+exports.deleteWholesaleOrder = asyncHandler(async (req, res, next) => {
+  const order = await wholesaleOrderService.deleteWholesaleOrder(req.params.id);
+  if (!order) {
+    return res.status(404).json({ success: false, error: 'Wholesale order not found' });
   }
-};
+  res.status(200).json({ success: true, data: {} });
+});
 
-// Update wholesale record (PUT - replace)
-exports.updateWholesaleRecord = async (req, res) => {
-  try {
-    const { customerId, productId, quantity, totalPrice, orderDate } = req.body;
-     if (!customerId || !productId || quantity == null || totalPrice == null || !orderDate) {
-      return res.status(400).json({ success: false, message: 'Missing required fields for update' });
-    }
+// Search wholesale orders
+exports.searchWholesaleOrders = asyncHandler(async (req, res, next) => {
+  const { wholeSalerName, wholeSalerLocation, wholeSalerEmail, productId, ...paginationQuery } = req.query;
+  const populate = req.query.populate === 'true';
+  const paginationParams = getPaginationParams(paginationQuery, 'wholeSalerName', 'asc');
 
-    const record = await WholesaleOrder.findByIdAndUpdate(
-      req.params.id,
-      { customerId, productId, quantity, totalPrice, orderDate },
-      { new: true, runValidators: true, overwrite: true }
-    );
-    if (!record) {
-      return res.status(404).json({ success: false, error: 'Wholesale record not found' });
-    }
-    res.status(200).json({ success: true, data: record });
-  } catch (error) {
-    console.error('Error updating wholesale record (PUT):', error);
-     if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-     } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
-     } else {
-        res.status(500).json({ success: false, error: 'Server error updating wholesale record' });
-     }
-  }
-};
+  let queryCriteria = {};
+  if (wholeSalerName) queryCriteria.wholeSalerName = { $regex: wholeSalerName, $options: 'i' };
+  if (wholeSalerLocation) queryCriteria.wholeSalerLocation = { $regex: wholeSalerLocation, $options: 'i' };
+  if (wholeSalerEmail) queryCriteria.wholeSalerEmail = { $regex: wholeSalerEmail, $options: 'i' };
+  if (productId) queryCriteria.wholeSalerProducts = productId; // Search if order contains specific product ID
 
-// Patch wholesale record (PATCH - partial update)
-exports.patchWholesaleRecord = async (req, res) => {
-  try {
-    if (req.body._id) delete req.body._id;
-    const record = await WholesaleOrder.findByIdAndUpdate(
-        req.params.id,
-        { $set: req.body },
-        { new: true, runValidators: true, context: 'query' }
-    );
-    if (!record) {
-      return res.status(404).json({ success: false, error: 'Wholesale record not found' });
-    }
-    res.status(200).json({ success: true, data: record });
-  } catch (error) {
-    console.error('Error patching wholesale record:', error);
-    if (error.name === 'ValidationError') {
-        res.status(400).json({ success: false, error: error.message });
-    } else if (error.name === 'CastError') {
-        res.status(400).json({ success: false, error: 'Invalid ID format' });
-    } else {
-        res.status(500).json({ success: false, error: 'Server error patching wholesale record' });
-    }
-  }
-};
+  const { orders, totalMatchingOrders } = await wholesaleOrderService.searchWholesaleOrders(queryCriteria, paginationParams, populate);
 
-// Delete wholesale record
-exports.deleteWholesaleRecord = async (req, res) => {
-  try {
-    const record = await WholesaleOrder.findByIdAndDelete(req.params.id);
-    if (!record) {
-      return res.status(404).json({ success: false, error: 'Wholesale record not found' });
-    }
-    res.status(200).json({ success: true, message: 'Wholesale record deleted successfully', data: {} });
-  } catch (error) {
-    console.error('Error deleting wholesale record:', error);
-     if (error.name === 'CastError') {
-        return res.status(400).json({ success: false, error: 'Invalid ID format' });
-    }
-    res.status(500).json({ success: false, error: 'Server error deleting wholesale record' });
-  }
-};
+  res.status(200).json({
+    success: true,
+    total: totalMatchingOrders,
+    page: paginationParams.page,
+    limit: paginationParams.limit,
+    totalPages: Math.ceil(totalMatchingOrders / paginationParams.limit),
+    count: orders.length,
+    data: orders
+  });
+});
 
-// Search wholesale records
-exports.searchWholesaleRecords = async (req, res) => {
-  try {
-    const { customerId, productId, minQuantity, startDate, endDate } = req.query;
-    let query = {};
-    if (customerId) query.customerId = customerId; // Assuming direct ID match or use regex if searching name
-    if (productId) query.productId = productId;
-    if (minQuantity) query.quantity = { $gte: parseInt(minQuantity) };
-    if (startDate || endDate) {
-        query.orderDate = {};
-        if (startDate) query.orderDate.$gte = new Date(startDate);
-        if (endDate) query.orderDate.$lte = new Date(endDate);
-    }
+// HEAD request for all wholesale orders
+exports.headWholesaleOrders = asyncHandler(async (req, res, next) => {
+  const count = await wholesaleOrderService.getWholesaleOrdersCount();
+  res.set('X-Total-Count', count.toString());
+  res.set('X-Resource-Type', 'WholesaleOrders');
+  res.status(200).end();
+});
 
-    const records = await WholesaleOrder.find(query);
-    res.status(200).json({ success: true, count: records.length, data: records });
-  } catch (error) {
-    console.error('Error searching wholesale records:', error);
-    res.status(500).json({ success: false, error: 'Server error searching wholesale records' });
-  }
-};
-
-// HEAD request for all wholesale records
-exports.headWholesaleRecords = async (req, res) => {
-  try {
-    const count = await WholesaleOrder.countDocuments();
-    res.set('X-Total-Count', count.toString());
-    res.set('X-Resource-Type', 'WholesaleRecords');
-    res.status(200).end();
-  } catch (error) {
-    console.error('Error handling HEAD for wholesale records:', error);
-    res.status(500).end();
-  }
-};
-
-// OPTIONS request for wholesale records collection
-exports.getWholesaleOptions = (req, res) => {
-  res.set('Allow', 'GET, POST, HEAD, OPTIONS');
+// OPTIONS request for wholesale orders collection
+exports.getWholesaleOrderOptions = (req, res) => {
+  res.set('Allow', 'GET, POST, HEAD, OPTIONS, PATCH');
   res.status(200).end();
 };
 
-// HEAD request for single wholesale record
-exports.headWholesaleRecord = async (req, res) => {
-  try {
-    const record = await WholesaleOrder.findById(req.params.id).select('updatedAt createdAt orderDate');
-    if (!record) {
-      return res.status(404).end();
-    }
-    res.set('X-Resource-Type', 'WholesaleRecord');
-    const lastModified = record.updatedAt || record.createdAt || record.orderDate; // Use orderDate if others absent
-    if (lastModified) {
-        res.set('Last-Modified', lastModified.toUTCString());
-    }
-    res.status(200).end();
-  } catch (error) {
-    console.error('Error handling HEAD for single wholesale record:', error);
-    if (error.name === 'CastError') {
-        return res.status(400).end();
-    }
-    res.status(500).end();
+// HEAD request for single wholesale order
+exports.headWholesaleOrder = asyncHandler(async (req, res, next) => {
+  const orderMeta = await wholesaleOrderService.getWholesaleOrderMetadata(req.params.id);
+  if (!orderMeta) {
+    return res.status(404).end();
   }
-};
+  res.set('X-Resource-Type', 'WholesaleOrder');
+  // Cannot set Last-Modified as no timestamp fields in schema
+  res.status(200).end();
+});
 
-// OPTIONS request for single wholesale record
-exports.getWholesaleIdOptions = (req, res) => {
+// OPTIONS request for single wholesale order
+exports.getWholesaleOrderIdOptions = (req, res) => {
   res.set('Allow', 'GET, PUT, DELETE, PATCH, HEAD, OPTIONS');
   res.status(200).end();
 };
+
+// PATCH a wholesale order (partial update)
+// Example: Add a product to the order
+exports.addProductToOrder = asyncHandler(async (req, res, next) => {
+    const { productId } = req.body;
+    if (!productId) {
+        return res.status(400).json({ success: false, error: 'productId is required in the request body.' });
+    }
+    const updateData = { $addToSet: { wholeSalerProducts: productId } };
+    const order = await wholesaleOrderService.patchWholesaleOrder(req.params.id, updateData);
+    if (!order) {
+        return res.status(404).json({ success: false, error: 'Wholesale order not found' });
+    }
+    res.status(200).json({ success: true, data: order });
+});
+
+// Example: Remove a product from the order
+exports.removeProductFromOrder = asyncHandler(async (req, res, next) => {
+    const { productId } = req.body;
+     if (!productId) {
+        return res.status(400).json({ success: false, error: 'productId is required in the request body.' });
+    }
+    const updateData = { $pull: { wholeSalerProducts: productId } };
+    const order = await wholesaleOrderService.patchWholesaleOrder(req.params.id, updateData);
+     if (!order) {
+        return res.status(404).json({ success: false, error: 'Wholesale order not found' });
+    }
+    res.status(200).json({ success: true, data: order });
+});
+
+// Generic PATCH for other fields (use with caution for arrays)
+exports.patchWholesaleOrder = asyncHandler(async (req, res, next) => {
+    // Exclude array modifications from generic patch unless specifically handled
+    if (req.body.wholeSalerProducts) {
+        return res.status(400).json({ success: false, error: 'Use specific endpoints to modify products list.' });
+    }
+    const order = await wholesaleOrderService.patchWholesaleOrder(req.params.id, req.body);
+    if (!order) {
+        return res.status(404).json({ success: false, error: 'Wholesale order not found' });
+    }
+    res.status(200).json({ success: true, data: order });
+});

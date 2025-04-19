@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 // importing models
 const models = require("../models/index");
 
+
 // Database configuration
 mongoose
   .connect(

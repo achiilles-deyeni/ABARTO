@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "b2c3d4e5-f6a7-8901-bcde-f1234567890a",
+		"name": "Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "YOUR_EXPORTER_ID"
+	},
+	"item": [
+		{
+			"name": "GET ALL PRODUCTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET PRODUCT BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A PRODUCT",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Lightweight Widget\",\n  \"price\": 150.00,\n  \"description\": \"A light and efficient widget.\",\n  \"category\": \"Widgets\",\n  \"quantity\": 800,\n  \"rating\": 4.8\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A PRODUCT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A PRODUCT (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Standard Widget MkII\",\n  \"price\": 199.99,\n  \"description\": \"Improved standard widget.\",\n  \"category\": \"Widgets\",\n  \"quantity\": 450,\n  \"rating\": 4.6\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/products/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A PRODUCT (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"price\": 205.50,\n  \"quantity\": 480\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/products/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR PRODUCTS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON PRODUCTS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE PRODUCT",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products/{{productId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"{{productId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH PRODUCTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/products/search?category=Widgets&minPrice=180",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"products",
+						"search"
+					],
+					"query": [
+						{
+							"key": "category",
+							"value": "Widgets"
+						},
+                        {
+							"key": "minPrice",
+							"value": "180"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

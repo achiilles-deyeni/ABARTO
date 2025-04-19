@@ -1,25 +1,34 @@
 const express = require("express");
 const router = express.Router();
-const wholesaleController = require('../../controllers/wholesaleController'); // NOTE: Controller needs to be created
+const wholesaleController = require('../../controllers/wholesaleController');
+const { protect } = require('../../middleware/authMiddleware');
 
-// GET all wholesale records, POST new record, HEAD, OPTIONS
+// Base route: /api/wholesale
 router.route('/')
-    .get(wholesaleController.getAllWholesaleRecords) // Placeholder
-    .post(wholesaleController.createWholesaleRecord) // Placeholder
-    .head(wholesaleController.headWholesaleRecords)  // Placeholder
-    .options(wholesaleController.getWholesaleOptions); // Placeholder
+    .get(protect, wholesaleController.getAllWholesaleOrders)
+    .post(protect, wholesaleController.createWholesaleOrder)
+    .head(protect, wholesaleController.headWholesaleOrders)
+    .options(wholesaleController.getWholesaleOrderOptions);
 
-// Search wholesale records - MUST come BEFORE the /:id route
+// Search route: /api/wholesale/search
 router.route('/search')
-    .get(wholesaleController.searchWholesaleRecords); // Placeholder
+    .get(protect, wholesaleController.searchWholesaleOrders);
 
-// GET, PUT, DELETE, PATCH, HEAD, OPTIONS wholesale record by ID
+// Single order route: /api/wholesale/:id
 router.route('/:id')
-    .get(wholesaleController.getWholesaleRecordById) // Placeholder
-    .put(wholesaleController.updateWholesaleRecord)  // Placeholder
-    .delete(wholesaleController.deleteWholesaleRecord)// Placeholder
-    .patch(wholesaleController.patchWholesaleRecord) // Placeholder
-    .head(wholesaleController.headWholesaleRecord)   // Placeholder
-    .options(wholesaleController.getWholesaleIdOptions); // Placeholder
+    .get(protect, wholesaleController.getWholesaleOrderById)
+    .put(protect, wholesaleController.updateWholesaleOrder)
+    .patch(protect, wholesaleController.patchWholesaleOrder) // Generic patch for non-array fields
+    .delete(protect, wholesaleController.deleteWholesaleOrder)
+    .head(protect, wholesaleController.headWholesaleOrder)
+    .options(wholesaleController.getWholesaleOrderIdOptions);
+
+// Routes for managing products within an order
+router.route('/:id/products')
+    .patch(protect, wholesaleController.addProductToOrder); // Add product using PATCH on sub-resource
+
+// Note: Removing a product could also use PATCH or DELETE on /:id/products/:productId
+router.route('/:id/products/remove') // Example using a sub-path for removal
+    .patch(protect, wholesaleController.removeProductFromOrder);
 
 module.exports = router;

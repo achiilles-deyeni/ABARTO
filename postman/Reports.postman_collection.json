@@ -1,0 +1,267 @@
+{
+	"info": {
+		"_postman_id": "b8c9d0e1-f2a3-4567-abcd-67890abcdef1",
+		"name": "Reports",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL REPORTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET REPORT BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A REPORT",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"reportName\": \"Weekly Sales Summary\",\\n  \"type\": \"sales\",\\n  \"parameters\": {\\n    \"startDate\": \"2023-11-06\",\\n    \"endDate\": \"2023-11-12\"\\n  }\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A REPORT",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A REPORT (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"reportName\": \"Monthly Inventory Summary - Oct 2023 (Final)\",\\n  \"type\": \"inventory\",\\n  \"generatedAt\": \"2023-11-01T08:00:00.000Z\",\\n  \"parameters\": {\\n    \"month\": 10,\\n    \"year\": 2023,\\n    \"status\": \"final\"\\n  },\\n  \"filePath\": \"/reports/inventory_oct_2023_final.pdf\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A REPORT (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"reportName\": \"Weekly Sales Summary (Revised)\",\\n  \"parameters\": {\\n    \"startDate\": \"2023-11-06\",\\n    \"endDate\": \"2023-11-12\",\\n    \"includeReturns\": true\\n  }\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR REPORTS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON REPORTS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE REPORT",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/{{reportId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"{{reportId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH REPORTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reports/search?type=sales&startDate=2023-11-01",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reports",
+						"search"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "sales"
+						},
+                        {
+							"key": "startDate",
+							"value": "2023-11-01"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

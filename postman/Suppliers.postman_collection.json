@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "e5f6a7b8-c9d0-1234-defa-34567890abcd",
+		"name": "Suppliers", 
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL SUPPLIERS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "GET SUPPLIER BY ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/{{supplierId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"{{supplierId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE A SUPPLIER",
+			"request": {
+				"method": "POST",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"name\": \"Gasket Galaxy\",\\n  \"contactPerson\": \"Gary Gasket\",\\n  \"email\": \"gary@gaskets.com\",\\n  \"phone\": \"555-GSKT\",\\n  \"address\": \"456 Sealant Ave\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/supplies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE A SUPPLIER",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/{{supplierId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"{{supplierId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE A SUPPLIER (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"name\": \"Bolt Bonanza Group\",\\n  \"contactPerson\": \"Barry Bolts\",\\n  \"email\": \"barry.bolts@bbg.com\",\\n  \"phone\": \"555-BOLT-GRP\",\\n  \"address\": \"123 Screw St, Suite 100\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/{{supplierId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"{{supplierId}}"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "UPDATE A SUPPLIER (PATCH)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+				"body": {
+					"mode": "raw",
+					"raw": "{\\n  \"contactPerson\": \"Barbara Bolts\",\\n  \"phone\": \"555-BOLT-NEW\"\\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/{{supplierId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"{{supplierId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEAD FOR SUPPLIERS",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS ON SUPPLIERS COLLECTION",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies"
+					]
+				}
+			},
+			"response": []
+		},
+        {
+			"name": "OPTIONS ON SINGLE SUPPLIER",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/{{supplierId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"{{supplierId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SEARCH SUPPLIERS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/supplies/search?name=Bonanza",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"supplies",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Bonanza"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+} 

@@ -3,6 +3,7 @@ const Employee = require("../models/employee");
 // Get all employees with pagination, sorting and filtering
 exports.getAllEmployees = async (req, res) => {
   try {
+<<<<<<< HEAD
     const {
       page = 1,
       limit = 10,
@@ -60,11 +61,49 @@ exports.getAllEmployees = async (req, res) => {
         pages: Math.ceil(total / parseInt(limit)),
       },
       data: employees,
+=======
+    // Pagination, Sorting, Limiting
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const sort = req.query.sort || 'lastName'; // Default sort by last name
+    const order = req.query.order || 'asc'; // Default order
+    const skip = (page - 1) * limit;
+
+    // Validate limit
+    const maxLimit = 100; 
+    const effectiveLimit = Math.min(limit, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count
+    const totalEmployees = await Employee.countDocuments();
+
+    // Execute query
+    const employees = await Employee.find()
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+
+    res.status(200).json({
+      success: true,
+      total: totalEmployees,
+      page: page,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalEmployees / effectiveLimit),
+      count: employees.length, // Count on the current page
+      data: employees
+>>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
     });
   } catch (error) {
     res.status(500).json({
       success: false,
+<<<<<<< HEAD
       error: error.message,
+=======
+      error: 'Server error fetching employees: ' + error.message
+>>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
     });
   }
 };
@@ -242,6 +281,7 @@ exports.bulkDeleteEmployees = async (req, res) => {
 // Advanced search employees with complex queries
 exports.searchEmployees = async (req, res) => {
   try {
+<<<<<<< HEAD
     const {
       firstName,
       lastName,
@@ -309,11 +349,55 @@ exports.searchEmployees = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
       data: employees,
+=======
+    const { firstName, lastName, department, position, page = 1, limit = 10, sort = 'lastName', order = 'asc' } = req.query;
+    let query = {};
+    
+    if (firstName) query.firstName = { $regex: firstName, $options: 'i' };
+    if (lastName) query.lastName = { $regex: lastName, $options: 'i' };
+    if (department) query.department = { $regex: department, $options: 'i' };
+    if (position) query.position = { $regex: position, $options: 'i' };
+    
+    // Pagination, Sorting, Limiting
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Validate limit
+    const maxLimit = 100;
+    const effectiveLimit = Math.min(limitNum, maxLimit);
+
+    // Build sort options
+    const sortOptions = {};
+    sortOptions[sort] = order === 'desc' ? -1 : 1;
+
+    // Get total count matching the search query
+    const totalMatchingEmployees = await Employee.countDocuments(query);
+
+    // Execute query with filtering, pagination, sorting, limiting
+    const employees = await Employee.find(query)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(effectiveLimit);
+    
+    res.status(200).json({
+      success: true,
+      total: totalMatchingEmployees,
+      page: pageNum,
+      limit: effectiveLimit,
+      totalPages: Math.ceil(totalMatchingEmployees / effectiveLimit),
+      count: employees.length, // Count on the current page
+      data: employees
+>>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
     });
   } catch (error) {
     res.status(500).json({
       success: false,
+<<<<<<< HEAD
       error: error.message,
+=======
+      error: 'Server error searching employees: ' + error.message
+>>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
     });
   }
 };
@@ -474,4 +558,47 @@ exports.patchEmployee = async (req, res) => {
       });
     }
   }
+};
+
+// BULK OPERATIONS
+exports.bulkCreateEmployees = async (req, res) => {
+    // Expect req.body to be an array of employee objects
+    if (!Array.isArray(req.body)) {
+        return res.status(400).json({ success: false, error: 'Request body must be an array of employees.' });
+    }
+    if (req.body.length === 0) {
+        return res.status(400).json({ success: false, error: 'Request body array cannot be empty.' });
+    }
+
+    try {
+        const options = { ordered: false, runValidators: true }; 
+        const result = await Employee.insertMany(req.body, options);
+        
+        res.status(201).json({ 
+            success: true, 
+            message: `Successfully inserted ${result.length} employees.`, 
+            insertedCount: result.length,
+            // data: result // Optionally return inserted documents
+        });
+
+    } catch (error) {
+        console.error("Bulk employee insert error:", error);
+        if (error.name === 'MongoBulkWriteError' && error.writeErrors) {
+            const validationErrors = error.writeErrors.map(err => ({
+                index: err.index,
+                code: err.code,
+                message: err.errmsg
+            }));
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Bulk operation failed due to validation errors.', 
+                validationErrors 
+            });
+        } else if (error.name === 'ValidationError') {
+             res.status(400).json({ success: false, error: error.message });
+        }
+        else {
+             res.status(500).json({ success: false, error: 'Server error during bulk employee creation.' });
+        }
+    }
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
 const rawMaterials = require("../../models/materials");
 // Route to add raw materials
 router.post("/insert-material", async (req, res) => {
@@ -150,5 +151,29 @@ router.get("/", async (req, res) => {
     });
   }
 });
+=======
+const materialController = require('../../controllers/materialController');
+const { protect } = require('../../middleware/authMiddleware');
+
+// GET all materials, POST new material, HEAD, OPTIONS
+router.route('/')
+    .get(protect, materialController.getAllMaterials)
+    .post(protect, materialController.createMaterial)
+    .head(protect, materialController.headMaterials)       // Add HEAD
+    .options(materialController.getMaterialOptions); // Add OPTIONS
+
+// Search materials - MUST come BEFORE the /:id route
+router.route('/search')
+    .get(protect, materialController.searchMaterials);
+
+// GET, PUT, DELETE, PATCH, HEAD, OPTIONS material by ID
+router.route('/:id')
+    .get(protect, materialController.getMaterialById)
+    .put(protect, materialController.updateMaterial)
+    .delete(protect, materialController.deleteMaterial)
+    .patch(protect, materialController.patchMaterial)
+    .head(protect, materialController.headMaterial)       // Add HEAD
+    .options(protect, materialController.getMaterialIdOptions); // Add OPTIONS
+>>>>>>> 4447d4ed7ba6273a2a621c781655103b267ffe11
 
 module.exports = router;

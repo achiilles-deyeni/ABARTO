@@ -8,6 +8,11 @@ const MachineryPart = require("./machines");
 const Wholesale = require("./wholesaleOrder");
 const Product = require("./products");
 const Safety = require("./safetyEquipment");
+const employees = require("./employee");
+const machines = require("./machineryPart");
+const wholesale = require("./wholesaleOrder");
+const products = require("./products");
+const safety = require("./safetyEquipment");
 
 module.exports = {
   Admin,
