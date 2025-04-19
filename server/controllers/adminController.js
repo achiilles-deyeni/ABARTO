@@ -279,8 +279,8 @@ exports.searchAdmins = async (req, res) => {
     // Add salary range query if provided
     if (minSalary || maxSalary) {
       query.salary = {};
-      if (minSalary) query.salary.$gte = parseFloat(minSalary);
-      if (maxSalary) query.salary.$lte = parseFloat(maxSalary);
+      if (minSalary) query.salary.$gt = parseFloat(minSalary);
+      if (maxSalary) query.salary.$lt = parseFloat(maxSalary);
     }
 
     // Handle pagination

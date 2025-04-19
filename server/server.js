@@ -1,3 +1,6 @@
+// Specify the path to the .env file relative to the root directory
+require("dotenv").config({ path: "./server/.env" });
+
 // Importing the needed modules
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -25,6 +28,14 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Import Middleware
+const errorHandler = require("./middleware/errorHandler");
+const logger = require("./middleware/logger"); // Import logger
+const apiLimiter = require("./middleware/rateLimiter"); // Import rate limiter
+
+app.use(logger); // Log requests
+app.use(apiLimiter); // Apply rate limiting to all API requests
+
 // using the routes
 
 app.use("/admins", adminRoute);
@@ -38,6 +49,8 @@ app.use("/security", securityRoute);
 app.use("/report", reportRoute);
 app.use("/safety", safetyRoute);
 app.use("/chemicals", chemicalRoute);
+
+app.use(errorHandler);
 
 // Initialization of the port
 const PORT = process.env.PORT || 3000;

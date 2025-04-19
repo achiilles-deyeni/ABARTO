@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../../controllers/adminController");
+const { protect, authorize } = require("../../middleware/auth");
+
+router.use(protect);
 
 // OPTIONS for collection
 router.options("/", adminController.getAdminOptions);
