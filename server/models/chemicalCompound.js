@@ -187,7 +187,6 @@ ChemicalCompoundSchema.pre("save", function (next) {
 // Index creation for improved query performance
 ChemicalCompoundSchema.index({ compoundName: 1 });
 ChemicalCompoundSchema.index({ formula: 1 });
-ChemicalCompoundSchema.index({ casNumber: 1 });
 ChemicalCompoundSchema.index({ hazardClass: 1 });
 ChemicalCompoundSchema.index({ status: 1 });
 

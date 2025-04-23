@@ -260,7 +260,6 @@ EmployeeSchema.virtual("employmentDuration").get(function () {
 
 // Indexes for query performance
 EmployeeSchema.index({ lastName: 1, firstName: 1 });
-EmployeeSchema.index({ email: 1 });
 EmployeeSchema.index({ department: 1 });
 EmployeeSchema.index({ "address.zipCode": 1 });
 EmployeeSchema.index({ status: 1 });

@@ -1,10 +1,10 @@
 // Specify the path to the .env file relative to the root directory
-require('dotenv').config({ path: './server/.env' });
+require("dotenv").config({ path: "../server/.env" });
 
 // Importing the needed modules
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const cors = require('cors'); // Import cors package
+const cors = require("cors"); // Import cors package
 const app = express();
 
 // Importing the database configuration
@@ -26,16 +26,16 @@ const authRoute = require("./routes/api/auth"); // Import the new auth route
 // const authRouter = require("./routers/auth"); // Uncomment if needed
 
 // Import Middleware
-const errorHandler = require('./middleware/errorHandler');
-const logger = require('./middleware/logger'); // Import logger
-const apiLimiter = require('./middleware/rateLimiter'); // Import rate limiter
+const errorHandler = require("./middleware/errorHandler");
+const logger = require("./middleware/logger"); // Import logger
+const apiLimiter = require("./middleware/rateLimiter"); // Import rate limiter
 
 // Enable CORS
 // IMPORTANT: For development, allow specific origin. For production, configure allowed origins more strictly.
 const corsOptions = {
-    origin: 'http://localhost:5173', // Allow requests from your React app
-    credentials: true, // Allow sending cookies/auth headers
-    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  origin: "http://localhost:5173", // Allow requests from your React app
+  credentials: true, // Allow sending cookies/auth headers
+  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
 
@@ -61,6 +61,7 @@ app.use("/security", securityRoute);
 app.use("/report", reportRoute);
 app.use("/safety", safetyRoute);
 app.use("/chemicals", chemicalRoute);
+app.use("/auth", authRoute); // Use the new auth route
 
 app.use(errorHandler);
 

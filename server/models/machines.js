@@ -106,9 +106,7 @@ MachineryPartSchema.pre("save", function (next) {
 });
 
 // Index creation for improved query performance
-MachineryPartSchema.index({ name: 1 });
 MachineryPartSchema.index({ type: 1 });
-MachineryPartSchema.index({ partNumber: 1 });
 MachineryPartSchema.index({ "location.warehouse": 1 });
 
 module.exports = mongoose.model("MachineryPart", MachineryPartSchema);
